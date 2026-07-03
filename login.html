@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Portal Login // YogSetu</title>
+  
+  <!-- SEO Metadata -->
+  <meta name="description" content="Access your teacher portal dashboard. Manage your schedule, credentials audit, and student bookings on YogSetu.">
+  
+  <!-- Typography pairing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@300;400;700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Theme Configurations -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sand: 'var(--color-canvas)',
+            clay: 'var(--color-canvas-secondary)',
+            cream: 'var(--color-panel)',
+            terracotta: {
+              50: '#FDF7F5',
+              300: 'var(--color-border)',
+              500: '#D48C70',
+              600: '#C87A53',
+              800: '#A5634E'
+            },
+            sage: {
+              100: 'var(--color-badge-bg)',
+              300: 'var(--color-border)',
+              500: 'var(--color-accent)',
+              600: 'var(--color-accent)',
+              700: 'var(--color-accent-hover)'
+            },
+            charcoal: 'var(--color-text)',
+            mutedgray: 'var(--color-text-secondary)'
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Custom Styles -->
+  <style>
+    /* Sunrise Theme Variables (Default Light) */
+    :root {
+      --color-canvas: #F4EFE6;
+      --color-canvas-secondary: #E9E2D5;
+      --color-panel: #FAF8F5;
+      --color-text: #1C201D;
+      --color-text-secondary: #5C645E;
+      --color-accent: #49644F; /* Forest Green */
+      --color-accent-hover: #374E3C;
+      --color-border: rgba(73, 100, 79, 0.25);
+      --color-badge-bg: #EAEFEA;
+      --color-badge-text: #374E3C;
+    }
+
+    body {
+      background-color: var(--color-canvas);
+      color: var(--color-text);
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* SVG Paper Grain Texture Overlay */
+    .paper-texture {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      opacity: 0.045;
+      z-index: 9999;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Custom Organic Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--color-canvas-secondary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-accent);
+      border-radius: 99px;
+    }
+
+    /* Custom Lerping Cursor */
+    #custom-cursor-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-accent);
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+    }
+
+    #custom-cursor-ring {
+      width: 42px;
+      height: 42px;
+      border: 1.5px solid var(--color-accent);
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: none;
+    }
+
+    /* Hover States for Custom Cursor */
+    .cursor-hover #custom-cursor-ring {
+      width: 62px;
+      height: 62px;
+      background-color: rgba(73, 100, 79, 0.15);
+      border-color: transparent;
+    }
+
+    /* Glassmorphism nav */
+    .glass-nav {
+      background: rgba(244, 239, 230, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    /* Soft shadow presets */
+    .organic-shadow {
+      box-shadow: 0 15px 35px -10px rgba(73, 100, 79, 0.08);
+    }
+    
+    .organic-shadow-hover {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .organic-shadow-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 25px 45px -15px rgba(73, 100, 79, 0.15);
+    }
+
+    /* Dynamic Border drawing classes */
+    .draw-line-h {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1.5px;
+      background-color: var(--color-border);
+      transform-origin: left;
+      transform: scaleX(0);
+      z-index: 10;
+    }
+    .draw-line-v {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 1.5px;
+      height: 100%;
+      background-color: var(--color-border);
+      transform-origin: top;
+      transform: scaleY(0);
+      z-index: 10;
+    }
+
+    /* Fullscreen Overlay Menu styling */
+    .glass-menu {
+      background-color: var(--color-canvas);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      transition: background-color 0.8s ease;
+    }
+
+    /* Input focus labels */
+    .floating-input:focus ~ label,
+    .floating-input:not(:placeholder-shown) ~ label {
+      transform: translateY(-22px) scale(0.85);
+      color: var(--color-accent);
+    }
+  </style>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="antialiased selection:bg-sage-500 selection:text-white relative min-h-screen">
+
+  <!-- Tactile Paper Overlay -->
+  <div class="paper-texture"></div>
+
+  <!-- Custom Cursor Elements -->
+  <div id="custom-cursor-dot"></div>
+  <div id="custom-cursor-ring"></div>
+
+  <!-- Ambient mesh blurs -->
+  <div class="fixed top-12 left-12 w-[35rem] h-[35rem] bg-sage-500/10 rounded-full filter blur-[120px] pointer-events-none z-0"></div>
+  <div class="fixed bottom-12 right-12 w-[30rem] h-[30rem] bg-terracotta-500/10 rounded-full filter blur-[120px] pointer-events-none z-0"></div>
+
+  <!-- ==========================================
+       GLOBAL NAV BAR & OVERLAY TOGGLES
+       ========================================== -->
+  <nav class="sticky top-0 z-40 w-full glass-nav relative font-sans">
+    <div class="draw-line-h !scale-x-100 !duration-[0.8s] !delay-300"></div>
+
+    <div class="max-w-7xl mx-auto px-6 sm:px-12 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="index.html" class="hover-trigger flex items-center gap-2.5 text-sage-700 font-serif text-2xl font-bold tracking-tight">
+        <span class="w-9 h-9 rounded-full bg-sage-600 flex items-center justify-center text-white shadow-md">
+          <i data-lucide="flower-2" class="w-5 h-5"></i>
+        </span>
+        <span>YogSetu</span>
+      </a>
+
+      <!-- Compact Inline Navigation Links -->
+      <div class="hidden md:flex items-center gap-8 font-mono text-[11px] uppercase tracking-widest text-mutedgray">
+        <a href="index.html" class="hover-trigger hover:text-sage-700">Home</a>
+        <a href="teachers.html" class="hover-trigger hover:text-sage-700">Teachers</a>
+        <a href="jobs.html" class="hover-trigger hover:text-sage-700">Jobs</a>
+        <a href="contact.html" class="hover-trigger hover:text-sage-700">Contact</a>
+        <a href="login.html" class="hover-trigger hover:text-sage-700 transition border-l border-sage-300/40 pl-8 duration-300">Portal</a>
+      </div>
+
+      <!-- Navigation Toggles -->
+      <div class="flex items-center gap-4">
+        <!-- Theme Toggle Wrap -->
+        <div id="theme-toggle-wrap" class="relative w-12 h-12 flex items-center justify-center">
+          <button id="theme-toggle-btn" class="hover-trigger w-10 h-10 rounded-full border border-sage-300 flex items-center justify-center text-sage-600 hover:text-sage-700 bg-cream/50 transition-colors" aria-label="Toggle Theme">
+            <i id="theme-toggle-icon" data-lucide="moon" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Burger Toggle Wrap -->
+        <div id="menu-toggle-wrap" class="relative w-14 h-14 flex items-center justify-center">
+          <button id="menu-toggle-btn" class="hover-trigger relative w-12 h-12 bg-sage-600 hover:bg-sage-700 text-white rounded-full flex items-center justify-center shadow-lg transition-colors duration-300 z-50" aria-label="Toggle Menu">
+            <span class="w-5 h-5 flex flex-col justify-center gap-1.5 transition-transform duration-300">
+              <span id="bar-1" class="w-full h-[2px] bg-white transition-all duration-300 origin-center"></span>
+              <span id="bar-2" class="w-full h-[2px] bg-white transition-all duration-300 origin-center"></span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- DRAMATIC FULLSCREEN OVERLAY MENU -->
+  <div id="menu-overlay" class="fixed inset-0 z-30 hidden glass-menu flex items-center justify-center p-8 sm:p-16">
+    <div class="max-w-7xl w-full mx-auto grid md:grid-cols-12 gap-12 items-center relative z-10">
+      
+      <!-- Left side: Monospaced credentials metadata -->
+      <div class="hidden md:block md:col-span-5 border-l border-sage-300/40 pl-8 space-y-6 font-mono text-xs text-mutedgray">
+        <p class="uppercase text-sage-700 font-bold tracking-widest font-mono">YOGSETU WELLNESS DIRECTORY</p>
+        <p class="leading-relaxed text-[11px]">A certified credentials yoga registry operating under the auspices of YogKulam Bharatiya Wellness Infrastructure.</p>
+        <div>
+          <span class="block text-sage-800 font-bold uppercase text-[9px] tracking-widest mb-1">FOUNDATION HEADQUARTERS</span>
+          <span class="block text-[11px]">Bhopal, Madhya Pradesh, India // IN</span>
+        </div>
+        <div>
+          <span class="block text-sage-800 font-bold uppercase text-[9px] tracking-widest mb-1">Active channels</span>
+          <a href="mailto:hello@yogsetu.com" class="block hover:text-sage-600 transition text-[11px] underline">hello@yogsetu.com</a>
+        </div>
+      </div>
+
+      <!-- Right side: Giant Typographic Navigation links -->
+            <!-- Right side: Compact Navigation links -->
+      <div class="col-span-full md:col-span-7 flex flex-col gap-6 text-right font-serif text-3xl sm:text-5xl font-bold uppercase select-none">
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="index.html" class="menu-link block hover:text-sage-600 hover:italic">Home</a>
+        </div>
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="teachers.html" class="menu-link block hover:text-sage-600 hover:italic">Teachers</a>
+        </div>
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="jobs.html" class="menu-link block hover:text-sage-600 hover:italic">Jobs</a>
+        </div>
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="contact.html" class="menu-link block hover:text-sage-600 hover:italic">Contact</a>
+        </div>
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="login.html" class="menu-link block hover:text-sage-600 hover:italic font-mono text-lg sm:text-xl pt-4 font-bold">Portal &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MAIN CONTENT: TEACHER LOGIN PORTAL
+       ========================================== -->
+  <main class="relative z-10 py-24 sm:py-32 bg-cream font-sans min-h-[75vh]">
+    <div class="max-w-md mx-auto px-6 space-y-8 text-center">
+      
+      <div class="space-y-2">
+        <h1 class="font-serif text-4xl font-bold text-charcoal uppercase leading-none">Teacher Portal</h1>
+        <p class="text-xs text-mutedgray">Manage your verified listing & student bookings.</p>
+      </div>
+
+      <form id="portal-login-form" class="bg-sand/30 border border-sage-200 p-8 rounded-[2.5rem] shadow-sm space-y-6 text-left">
+        <div class="relative">
+          <input type="email" id="login-email" placeholder=" " class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
+          <label for="login-email" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Teacher Email</label>
+        </div>
+        <div class="relative">
+          <input type="password" id="login-pass" placeholder=" " class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
+          <label for="login-pass" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Password</label>
+        </div>
+        <button type="submit" class="hover-trigger w-full py-3.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-sm shadow transition">Access Dashboard</button>
+      </form>
+      
+      <p class="text-xs text-mutedgray">New teacher? <a href="signup.html" class="text-sage-700 font-bold hover:underline">Apply for listing audit &rarr;</a></p>
+
+    </div>
+  </main>
+
+  <!-- ==========================================
+       GLOBAL FOOTER
+       ========================================== -->
+  <footer class="bg-clay border-t border-sage-200 py-16 relative z-10 font-sans">
+    <div class="max-w-7xl mx-auto px-6 sm:px-12 grid md:grid-cols-12 gap-12">
+      <div class="md:col-span-5 space-y-4">
+        <div class="flex items-center gap-2 text-sage-800 font-serif text-2xl font-bold tracking-tight">
+          <span class="w-8 h-8 rounded-full bg-sage-600 flex items-center justify-center text-white">
+            <i data-lucide="flower-2" class="w-4.5 h-4.5"></i>
+          </span>
+          <span>YogSetu</span>
+        </div>
+        <p class="text-xs text-mutedgray leading-relaxed max-w-sm">
+          A verified yoga teacher directory — powered by YogKulam's credentialing infrastructure.
+        </p>
+      </div>
+
+      <div class="md:col-span-7 grid grid-cols-3 gap-6 font-mono text-xs">
+        <div class="space-y-3">
+          <div class="text-sage-800 font-bold uppercase tracking-wider text-[10px]">FOR STUDENTS</div>
+          <ul class="space-y-2 text-charcoal font-sans">
+            <li><a href="teachers.html" class="hover-trigger hover:text-sage-600 transition">Browse Directory</a></li>
+            <li><a href="index.html#how-it-works" class="hover-trigger hover:text-sage-600 transition">About Somatic Path</a></li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <div class="text-sage-800 font-bold uppercase tracking-wider text-[10px]">FOR TEACHERS</div>
+          <ul class="space-y-2 text-charcoal font-sans">
+            <li><a href="signup.html" class="hover-trigger hover:text-sage-600 transition">Submit Audit</a></li>
+            <li><a href="login.html" class="hover-trigger hover:text-sage-600 transition">Portal Login</a></li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <div class="text-sage-800 font-bold uppercase tracking-wider text-[10px]">COMPANY</div>
+          <ul class="space-y-2 text-charcoal font-sans">
+            <li><a href="index.html#about-us" class="hover-trigger hover:text-sage-600 transition">YogKulam</a></li>
+            <li><a href="contact.html" class="hover-trigger hover:text-sage-600 transition">Contact Desk</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 sm:px-12 pt-12 mt-12 border-t border-sage-300 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono text-mutedgray">
+      <span>YogSetu is a YogKulam initiative // yogsetu.com</span>
+      <span>&copy; 2026 YOGSETU. ALL RIGHTS RESERVED.</span>
+    </div>
+  </footer>
+
+  <!-- Toast notification element -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl transition-all duration-300 transform translate-y-12 opacity-0 pointer-events-none bg-sage-700 text-white font-sans text-xs font-semibold">
+    <div id="toast-icon"></div>
+    <span id="toast-text"></span>
+  </div>
+
+  <!-- APPLICATION SCRIPTS -->
+  <script src="js/database.js" defer></script>
+  <script src="js/animations.js" defer></script>
+  <script src="js/booking.js" defer></script>
+</body>
+</html>

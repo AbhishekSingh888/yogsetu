@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YogSetu // Verified Yoga Teacher Directory by YogKulam</title>
+  
+  <!-- SEO Metadata -->
+  <meta name="description" content="Rigigorously verified, credentialed yoga teachers in India. Filtered by style, city, schedule, and budget. Direct connection without middlemen.">
+  
+  <!-- Typography pairing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@300;400;700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Theme Configurations -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sand: 'var(--color-canvas)',
+            clay: 'var(--color-canvas-secondary)',
+            cream: 'var(--color-panel)',
+            terracotta: {
+              50: '#FDF7F5',
+              300: 'var(--color-border)',
+              500: '#D48C70',
+              600: '#C87A53',
+              800: '#A5634E'
+            },
+            sage: {
+              100: 'var(--color-badge-bg)',
+              300: 'var(--color-border)',
+              500: 'var(--color-accent)',
+              600: 'var(--color-accent)',
+              700: 'var(--color-accent-hover)'
+            },
+            charcoal: 'var(--color-text)',
+            mutedgray: 'var(--color-text-secondary)'
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Custom Styles: Paper Grain, Custom Cursor -->
+  <style>
+    /* Sunrise Theme Variables (Default Light) */
+    :root {
+      --color-canvas: #F4EFE6;
+      --color-canvas-secondary: #E9E2D5;
+      --color-panel: #FAF8F5;
+      --color-text: #1C201D;
+      --color-text-secondary: #5C645E;
+      --color-accent: #49644F; /* Forest Green */
+      --color-accent-hover: #374E3C;
+      --color-border: rgba(73, 100, 79, 0.25);
+      --color-badge-bg: #EAEFEA;
+      --color-badge-text: #374E3C;
+    }
+
+    body {
+      background-color: var(--color-canvas);
+      color: var(--color-text);
+      cursor: none; /* Hide default cursor */
+      overflow-x: hidden;
+    }
+
+    /* SVG Paper Grain Texture Overlay */
+    .paper-texture {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      opacity: 0.045;
+      z-index: 9999;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Custom Organic Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--color-canvas-secondary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-accent);
+      border-radius: 99px;
+    }
+
+    /* Custom Lerping Cursor */
+    #custom-cursor-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-accent);
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+    }
+
+    #custom-cursor-ring {
+      width: 42px;
+      height: 42px;
+      border: 1.5px solid var(--color-accent);
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: none;
+    }
+
+    /* Hover States for Custom Cursor */
+    .cursor-hover #custom-cursor-ring {
+      width: 62px;
+      height: 62px;
+      background-color: rgba(73, 100, 79, 0.15);
+      border-color: transparent;
+    }
+    
+    .cursor-text-hover #custom-cursor-ring {
+      width: 80px;
+      height: 80px;
+      background-color: var(--color-text);
+      mix-blend-mode: difference;
+      border-color: transparent;
+    }
+
+    /* Glassmorphism nav */
+    .glass-nav {
+      background: rgba(244, 239, 230, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    /* Radio Selector Card styling */
+    .radio-card {
+      transition: all 0.2s ease;
+      border-width: 2px !important;
+      border-color: var(--color-border) !important;
+    }
+    .radio-card:has(input[type="radio"]:checked) {
+      border-color: var(--color-accent) !important;
+    }
+
+    /* Soft shadow presets */
+    .organic-shadow {
+      box-shadow: 0 15px 35px -10px rgba(73, 100, 79, 0.08);
+    }
+    
+    .organic-shadow-hover {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .organic-shadow-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 25px 45px -15px rgba(73, 100, 79, 0.15);
+    }
+
+    /* Dynamic Border drawing classes */
+    .draw-line-h {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1.5px;
+      background-color: var(--color-border);
+      transform-origin: left;
+      transform: scaleX(0);
+      z-index: 10;
+    }
+    .draw-line-v {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 1.5px;
+      height: 100%;
+      background-color: var(--color-border);
+      transform-origin: top;
+      transform: scaleY(0);
+      z-index: 10;
+    }
+
+    /* Split Text Reveal Mask */
+    .split-parent {
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: bottom;
+    }
+
+    .split-child {
+      display: inline-block;
+      will-change: transform;
+    }
+
+    /* Infinite Marquee animations */
+    @keyframes marqueeLeft {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-inner-left {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: marqueeLeft 42s linear infinite;
+    }
+
+    @keyframes rotateLotus {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .spin-lotus {
+      animation: rotateLotus 16s linear infinite;
+    }
+
+    /* Fullscreen Overlay Menu styling */
+    .glass-menu {
+      background-color: var(--color-canvas);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      transition: background-color 0.8s ease;
+    }
+
+    /* Input focus labels */
+    .floating-input:focus ~ label,
+    .floating-input:not(:placeholder-shown) ~ label {
+      transform: translateY(-22px) scale(0.85);
+      color: var(--color-accent);
+    }
+  </style>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="antialiased selection:bg-sage-500 selection:text-white relative min-h-screen">
+
+  <!-- Tactile Paper Overlay -->
+  <div class="paper-texture"></div>
+
+  <!-- Custom Cursor Elements -->
+  <div id="custom-cursor-dot"></div>
+  <div id="custom-cursor-ring"></div>
+
+  <!-- Ambient mesh blurs -->
+  <div class="fixed top-12 left-12 w-[35rem] h-[35rem] bg-sage-500/10 rounded-full filter blur-[120px] pointer-events-none z-0"></div>
+  <div class="fixed bottom-12 right-12 w-[30rem] h-[30rem] bg-terracotta-500/10 rounded-full filter blur-[120px] pointer-events-none z-0"></div>
+
+  <!-- ==========================================
+       1. DEEP BREATHING PRELOADER SCREEN
+       ========================================== -->
+  <div id="preloader" class="fixed inset-0 z-50 bg-cream flex flex-col justify-between p-8 sm:p-16">
+    <div class="flex justify-between items-center text-xs font-mono uppercase tracking-widest text-sage-600">
+      <span>YogSetu // Credentialing India's Yoga</span>
+      <span>Breath in, hold, center</span>
+    </div>
+    
+    <div class="my-auto flex flex-col items-center justify-center text-center">
+      <div id="preloader-circle" class="w-32 h-32 rounded-full bg-sand border border-sage-300 flex items-center justify-center relative mb-6">
+        <div class="absolute inset-0 rounded-full border border-sage-500 animate-ping opacity-20"></div>
+        <i data-lucide="flower-2" class="w-14 h-14 text-sage-700 spin-lotus"></i>
+      </div>
+      
+      <div class="font-serif text-4xl font-bold flex items-baseline">
+        <span id="preloader-counter" class="text-6xl font-mono text-sage-700">00</span>
+        <span class="text-sm font-sans font-bold text-mutedgray ml-1">%</span>
+      </div>
+      <p class="text-xs text-sage-600 uppercase tracking-widest font-bold mt-4 animate-pulse">Verifying somatic guides...</p>
+    </div>
+
+    <div class="flex justify-between items-center text-[10px] text-gray-400 font-mono">
+      <span>POWERED BY YOGKULAM</span>
+      <span>ESTD 2014 // BHARATIYA WELLNESS INFRASTRUCTURE</span>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       2. GLOBAL NAV BAR & OVERLAY TOGGLES
+       ========================================== -->
+  <nav class="sticky top-0 z-40 w-full glass-nav relative font-sans">
+    <div class="draw-line-h !scale-x-100 !duration-[0.8s] !delay-300"></div>
+
+    <div class="max-w-7xl mx-auto px-6 sm:px-12 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="index.html" class="hover-trigger flex items-center gap-2.5 text-sage-700 font-serif text-2xl font-bold tracking-tight">
+        <span class="w-9 h-9 rounded-full bg-sage-600 flex items-center justify-center text-white shadow-md">
+          <i data-lucide="flower-2" class="w-5 h-5"></i>
+        </span>
+        <span>YogSetu</span>
+      </a>
+
+      <!-- Compact Inline Navigation Links -->
+      <div class="hidden md:flex items-center gap-8 font-mono text-[11px] uppercase tracking-widest text-mutedgray">
+        <a href="index.html" class="hover-trigger hover:text-sage-700">Home</a>
+        <a href="teachers.html" class="hover-trigger hover:text-sage-700">Teachers</a>
+        <a href="jobs.html" class="hover-trigger hover:text-sage-700">Jobs</a>
+        <a href="contact.html" class="hover-trigger hover:text-sage-700">Contact</a>
+        <a href="login.html" class="hover-trigger hover:text-sage-700 transition border-l border-sage-300/40 pl-8 duration-300">Portal</a>
+      </div>
+
+      <!-- Navigation Toggles -->
+      <div class="flex items-center gap-4">
+        <!-- Theme Toggle Wrap -->
+        <div id="theme-toggle-wrap" class="relative w-12 h-12 flex items-center justify-center">
+          <button id="theme-toggle-btn" class="hover-trigger w-10 h-10 rounded-full border border-sage-300 flex items-center justify-center text-sage-600 hover:text-sage-700 bg-cream/50 transition-colors" aria-label="Toggle Theme">
+            <i id="theme-toggle-icon" data-lucide="moon" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Burger Toggle Wrap -->
+        <div id="menu-toggle-wrap" class="relative w-14 h-14 flex items-center justify-center">
+          <button id="menu-toggle-btn" class="hover-trigger relative w-12 h-12 bg-sage-600 hover:bg-sage-700 text-white rounded-full flex items-center justify-center shadow-lg transition-colors duration-300 z-50" aria-label="Toggle Menu">
+            <span class="w-5 h-5 flex flex-col justify-center gap-1.5 transition-transform duration-300">
+              <span id="bar-1" class="w-full h-[2px] bg-white transition-all duration-300 origin-center"></span>
+              <span id="bar-2" class="w-full h-[2px] bg-white transition-all duration-300 origin-center"></span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- DRAMATIC FULLSCREEN OVERLAY MENU -->
+  <div id="menu-overlay" class="fixed inset-0 z-30 hidden glass-menu flex items-center justify-center p-8 sm:p-16">
+    <div class="max-w-7xl w-full mx-auto grid md:grid-cols-12 gap-12 items-center relative z-10">
+      
+      <!-- Left side: Monospaced credentials metadata -->
+      <div class="hidden md:block md:col-span-5 border-l border-sage-300/40 pl-8 space-y-6 font-mono text-xs text-mutedgray">
+        <p class="uppercase text-sage-700 font-bold tracking-widest font-mono">YOGSETU WELLNESS DIRECTORY</p>
+        <p class="leading-relaxed text-[11px]">A certified credentials yoga registry operating under the auspices of YogKulam Bharatiya Wellness Infrastructure.</p>
+        <div>
+          <span class="block text-sage-800 font-bold uppercase text-[9px] tracking-widest mb-1">FOUNDATION HEADQUARTERS</span>
+          <span class="block text-[11px]">Bhopal, Madhya Pradesh, India // IN</span>
+        </div>
+        <div>
+          <span class="block text-sage-800 font-bold uppercase text-[9px] tracking-widest mb-1">Active channels</span>
+          <a href="mailto:hello@yogsetu.com" class="block hover:text-sage-600 transition text-[11px] underline">hello@yogsetu.com</a>
+        </div>
+      </div>
+
+      <!-- Right side: Giant Typographic Navigation links -->
+            <!-- Right side: Compact Navigation links -->
+      <div class="col-span-full md:col-span-7 flex flex-col gap-6 text-right font-serif text-3xl sm:text-5xl font-bold uppercase select-none">
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="index.html" class="menu-link block hover:text-sage-600 hover:italic">Home</a>
+        </div>
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="teachers.html" class="menu-link block hover:text-sage-600 hover:italic">Teachers</a>
+        </div>
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="jobs.html" class="menu-link block hover:text-sage-600 hover:italic">Jobs</a>
+        </div>
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="contact.html" class="menu-link block hover:text-sage-600 hover:italic">Contact</a>
+        </div>
+        <div class="overflow-hidden menu-link-wrapper">
+          <a href="login.html" class="menu-link block hover:text-sage-600 hover:italic font-mono text-lg sm:text-xl pt-4 font-bold">Portal &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       3. SPA VIEW SECTIONS
+       ========================================== -->
+  <main class="relative z-10 min-h-[70vh]">
+
+    <!-- VIEW A: HOME (LANDING FLOW WITH ALL ORIGINAL CHAPTERS) -->
+    <div id="view-landing-flow" class="spa-view space-y-0">
+      
+      <!-- CHAPTER 1: HERO (THE HOOK) -->
+      <section id="home" class="min-h-screen flex flex-col justify-center pt-28 pb-16 px-6 sm:px-12 relative overflow-hidden select-none bg-sand">
+        <!-- Hero Background Image & Dark Overlay -->
+        <div class="absolute inset-0 bg-cover bg-center opacity-70 pointer-events-none z-0" style="background-image: url('images/hero_background.jpg');"></div>
+        <div class="absolute inset-0 bg-black/65 pointer-events-none z-0"></div>
+        
+        <div class="draw-line-h"></div>
+        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none select-none opacity-[0.03] z-0 overflow-hidden">
+          <div class="marquee-inner-left font-serif font-black text-[12vw] uppercase tracking-tighter flex gap-12 whitespace-nowrap">
+            <span>YogSetu • Authenticity • Tradition • Breath • Align • YogSetu • Authenticity • Tradition • Breath • Align</span>
+          </div>
+        </div>
+
+        <div class="max-w-7xl w-full mx-auto grid lg:grid-cols-12 gap-12 items-end relative z-10">
+          <div class="lg:col-span-4 order-2 lg:order-1 space-y-4 text-left font-mono text-xs text-stone-300">
+            <div class="text-terracotta-300 uppercase tracking-widest font-bold font-mono">YOGSETU WELLNESS DIALECT</div>
+            <p class="leading-relaxed">Most yoga teachers in India are unverified, uninformed, and unavailable. We list only credentialed teachers filtered by somatic discipline, city, and schedule.</p>
+            <div class="pt-2">
+              <a href="#directory" class="hover-trigger inline-flex items-center gap-2 text-stone-100 hover:text-terracotta-300 transition font-bold uppercase tracking-wider text-xs">
+                <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
+                <span>Browse vetted directory</span>
+              </a>
+            </div>
+          </div>
+          <div class="lg:col-span-8 order-1 lg:order-2 text-right">
+            <h1 id="hero-title" class="font-serif text-[10vw] sm:text-[7vw] lg:text-[7vw] font-black uppercase leading-[0.9] tracking-tighter text-stone-100">
+              <div class="split-parent"><span class="split-child">Yoga didn't</span></div><br>
+              <div class="split-parent text-terracotta-500 italic font-normal"><span class="split-child">stick.</span></div><br>
+              <div class="split-parent"><span class="split-child">Here is why.</span></div>
+            </h1>
+          </div>
+        </div>
+
+        <div class="absolute bottom-8 left-6 sm:left-12 flex items-center gap-4 font-mono text-[10px] text-stone-400 uppercase tracking-widest animate-bounce">
+          <i data-lucide="arrow-down" class="w-4 h-4 text-terracotta-500"></i>
+          <span>SCROLL TO UNCOVER</span>
+        </div>
+      </section>
+
+      <!-- CHAPTER 2: THE PROBLEM (THE CONFRONTATION) -->
+      <section id="problem" class="relative py-24 sm:py-32 bg-cream">
+        <div class="draw-line-h"></div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 grid lg:grid-cols-12 gap-12">
+          <div class="lg:col-span-4 space-y-4 lg:sticky lg:top-28 self-start">
+            <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">01 // The Confrontation</span>
+            <h2 class="font-serif text-4xl sm:text-5xl font-bold text-charcoal leading-tight">
+              The teacher is almost always the problem. <span class="italic text-terracotta-600 font-normal">Not you.</span>
+            </h2>
+            <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
+              Yoga works. What fails is finding a teacher who is qualified, consistent, and the right fit for where you are.
+            </p>
+          </div>
+          <div class="lg:col-span-8 grid md:grid-cols-2 relative rounded-[2rem] overflow-hidden border border-sage-300/40 bg-cream shadow-sm p-0 gap-0">
+            <div class="draw-line-h"></div>
+            <div class="p-8 sm:p-10 space-y-4 relative flex flex-col justify-between">
+              <div class="draw-line-v hidden md:block"></div>
+              <span class="absolute top-6 right-6 text-7xl font-serif text-sage-500/10 font-bold select-none">01</span>
+              <div class="space-y-4">
+                <div class="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center text-red-700 shadow-sm">
+                  <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-bold text-charcoal">The Common Story</h3>
+                <p class="text-xs sm:text-sm text-mutedgray leading-relaxed font-sans">
+                  You've tried yoga. You gave it 2-3 goes, maybe more. You got to a class, the teacher felt off, and you quit. The teacher had zero certs, or taught 5 styles at once, or gave 5 classes at a time. There was never a class that was right for you.
+                </p>
+              </div>
+            </div>
+            <div class="p-8 sm:p-10 space-y-4 relative flex flex-col justify-between">
+              <span class="absolute top-6 right-6 text-7xl font-serif text-sage-500/10 font-bold select-none">02</span>
+              <div class="space-y-4">
+                <div class="w-12 h-12 bg-sage-100 rounded-2xl flex items-center justify-center text-sage-700 shadow-sm">
+                  <i data-lucide="shield-check" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-bold text-charcoal">The Uncomfortable Truth</h3>
+                <p class="text-xs sm:text-sm text-mutedgray leading-relaxed font-sans">
+                  Most students who quit yoga had an unqualified yoga teacher. An unbiased way to find them like YogSetu doesn't exist. Not before this. Our verification system ensures only the right teachers for serious yoga students make it onto the platform.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 3: THE AUTHORITY (YOGKULAM FOOTPRINT) -->
+      <section id="about-us" class="relative py-20 bg-sand">
+        <div class="draw-line-h"></div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 grid lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-5 relative">
+            <div class="aspect-square w-full rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-cream">
+              <img src="images/yoga_1.png" alt="YogKulam training teachers" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <div class="lg:col-span-7 space-y-6 lg:pl-6">
+            <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">02 // The Authority</span>
+            <h2 class="font-serif text-3.5xl sm:text-5xl font-bold text-charcoal leading-none">
+              Backed by YogKulam's decade-long certification footprint
+            </h2>
+            <p class="text-xs sm:text-base text-mutedgray leading-relaxed font-sans">
+              YogSetu is built for YogKulam — which has trained 40,000+ yoga teachers and certified 60,000+ students. We built this directory as a credentialing infrastructure for yoga in India. YogKulam holds memberships with Yoga Alliance, PYC, YTTAI, PA — and with more than 12 years of experience.
+            </p>
+            <div class="p-5 bg-cream border border-sage-200 rounded-2xl flex items-center gap-3 shadow-sm">
+              <div class="w-10 h-10 rounded-xl bg-sage-100 flex items-center justify-center text-sage-700 shrink-0">
+                <i data-lucide="award" class="w-5.5 h-5.5"></i>
+              </div>
+              <p class="text-xs text-mutedgray font-semibold font-sans">
+                Trust this platform to show you teachers that have actually earned certification.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 4: HOW IT WORKS (DYNAMIC EDITORIAL STEPS DECK) -->
+      <section id="how-it-works" class="relative py-24 bg-cream">
+        <div class="draw-line-h"></div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 space-y-12">
+          <div class="max-w-xl space-y-2">
+            <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">03 // The Path</span>
+            <h2 class="font-serif text-3.5xl sm:text-5xl font-bold text-charcoal leading-none uppercase">How It Works</h2>
+            <p class="text-xs sm:text-sm text-mutedgray font-semibold font-sans mt-0.5">A single deck to find, audit, and connect with certified somatic guides.</p>
+          </div>
+
+          <div class="border border-sage-300/40 rounded-[2.5rem] bg-cream shadow-sm grid lg:grid-cols-12 gap-0 overflow-hidden relative">
+            <div class="draw-line-v hidden lg:block !left-[41.666667%] !right-auto"></div>
+            
+            <!-- Left Column: Navigation -->
+            <div class="lg:col-span-5 p-8 sm:p-12 bg-sand/30 flex flex-col justify-between gap-8">
+              <div class="space-y-6">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-sage-600 block">SELECT A STEP</span>
+                <div class="flex flex-col gap-4">
+                  <button data-step="1" class="step-nav-link text-left hover-trigger flex items-center gap-4 transition duration-300 !text-sage-700 font-bold">
+                    <span class="dot-indicator w-2.5 h-2.5 rounded-full bg-sage-600 shrink-0 transition-opacity duration-300"></span>
+                    <div class="space-y-0.5">
+                      <span class="text-[10px] font-mono text-mutedgray block">01 // SELECT</span>
+                      <span class="font-serif text-lg sm:text-xl text-charcoal">Search by details</span>
+                    </div>
+                  </button>
+                  <button data-step="2" class="step-nav-link text-left hover-trigger flex items-center gap-4 transition duration-300 text-mutedgray">
+                    <span class="dot-indicator w-2.5 h-2.5 rounded-full bg-sage-600 shrink-0 opacity-0 transition-opacity duration-300"></span>
+                    <div class="space-y-0.5">
+                      <span class="text-[10px] font-mono text-mutedgray block">02 // REVIEW</span>
+                      <span class="font-serif text-lg sm:text-xl text-charcoal">Audited profiles</span>
+                    </div>
+                  </button>
+                  <button data-step="3" class="step-nav-link text-left hover-trigger flex items-center gap-4 transition duration-300 text-mutedgray">
+                    <span class="dot-indicator w-2.5 h-2.5 rounded-full bg-sage-600 shrink-0 opacity-0 transition-opacity duration-300"></span>
+                    <div class="space-y-0.5">
+                      <span class="text-[10px] font-mono text-mutedgray block">03 // BIND</span>
+                      <span class="font-serif text-lg sm:text-xl text-charcoal">Book directly</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              <div class="font-mono text-[10px] text-mutedgray uppercase">No commissions • Direct connection</div>
+            </div>
+
+            <!-- Right Column: Content -->
+            <div class="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between min-h-[500px]">
+              
+              <!-- Panel 1 -->
+              <div data-panel="1" class="step-content-panel space-y-6">
+                <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
+                  Filter by yoga style (Hatha, Ashtanga, Prenatal, Therapeutic), location or online, timing, language preference — and more options specific to teaching approach.
+                </p>
+                <div class="w-full bg-sand/40 border border-sage-300/60 rounded-[2rem] p-6 space-y-6 shadow-sm">
+                  <div class="space-y-2">
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-sage-600 block">01 // SELECT SOMATIC DISCIPLINE</span>
+                    <div class="flex flex-wrap gap-2">
+                      <button data-style="Hatha" class="sandbox-style-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Hatha</button>
+                      <button data-style="Ashtanga" class="sandbox-style-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Ashtanga</button>
+                      <button data-style="Prenatal" class="sandbox-style-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Prenatal</button>
+                      <button data-style="Therapeutic" class="sandbox-style-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Therapeutic</button>
+                    </div>
+                  </div>
+                  <div class="space-y-2">
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-sage-600 block">02 // SELECT LOCATION</span>
+                    <div class="flex flex-wrap gap-2">
+                      <button data-loc="Delhi" class="sandbox-loc-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Delhi</button>
+                      <button data-loc="Mumbai" class="sandbox-loc-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Mumbai</button>
+                      <button data-loc="Bengaluru" class="sandbox-loc-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Bengaluru</button>
+                      <button data-loc="Online" class="sandbox-loc-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Online</button>
+                    </div>
+                  </div>
+                  <div class="border-t border-sage-300/40 pt-4 space-y-3">
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-sage-600 block">03 // DYNAMIC VETTED RESULT</span>
+                    <div id="sandbox-result-card" class="bg-cream border border-sage-200 p-4 rounded-2xl flex items-center justify-between gap-4 transition-all duration-300">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-sage-100 flex items-center justify-center text-sage-700 shrink-0">
+                          <i data-lucide="flower-2" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                          <h4 id="sandbox-teacher-name" class="font-serif text-sm font-bold text-charcoal font-sans">Select filters above</h4>
+                          <p id="sandbox-teacher-desc" class="text-[10px] text-mutedgray leading-tight">Click on a somatic style and location to preview a verified guide match.</p>
+                        </div>
+                      </div>
+                      <button id="sandbox-cta-btn" class="hidden px-4 py-2 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider transition">Connect</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Panel 2 -->
+              <div data-panel="2" class="step-content-panel space-y-6 hidden">
+                <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
+                  See detailed certification data, accreditation by top bodies like Yoga Alliance or AYUSH/CCRYN, teaching experience, session format, and individual teacher video — before anyone answers the phone.
+                </p>
+                <div class="aspect-[16/9] w-full bg-sand/30 border border-sage-200 rounded-[2rem] flex items-center justify-center p-4 md:p-8">
+                  <i data-lucide="shield-check" class="w-12 h-12 md:w-16 md:h-16 text-sage-600 animate-pulse"></i>
+                </div>
+              </div>
+
+              <!-- Panel 3 -->
+              <div data-panel="3" class="step-content-panel space-y-6 hidden">
+                <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
+                  Contact teachers through their verified profiles and attend their first session. No middlemen. No hidden platform take. Straight to your teacher within 24 minutes of first visiting YogSetu.
+                </p>
+                <div class="aspect-[16/9] w-full bg-sand/30 border border-sage-200 rounded-[2rem] flex items-center justify-center p-4 md:p-8">
+                  <i data-lucide="check-circle" class="w-12 h-12 md:w-16 md:h-16 text-sage-600 animate-pulse"></i>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DIAGONAL MARQUEE BAND -->
+      <div class="w-full overflow-hidden bg-sage-600 text-cream py-6 -rotate-1.5 scale-[1.03] my-12 z-20 relative shadow-lg">
+        <div class="marquee-inner-left font-mono text-sm uppercase tracking-widest flex gap-8 whitespace-nowrap">
+          <span>VERIFIED TEACHERS • AYUSH CERTIFIED • YOGA ALLIANCE • DIRECT CONNECTION • NO MIDDLEMEN • SOMATIC HEALTHCARE • AUTHENTIC TRADITION •</span>
+          <span>VERIFIED TEACHERS • AYUSH CERTIFIED • YOGA ALLIANCE • DIRECT CONNECTION • NO MIDDLEMEN • SOMATIC HEALTHCARE • AUTHENTIC TRADITION •</span>
+        </div>
+      </div>
+
+      <!-- CHAPTER 5: SPECTRUM -->
+      <section id="styles" class="relative py-24 sm:py-32 bg-cream">
+        <div class="draw-line-h"></div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 space-y-12">
+          <div class="max-w-xl text-center sm:text-left space-y-2">
+            <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">04 // The Spectrum</span>
+            <h2 class="font-serif text-3.5xl sm:text-5xl font-bold text-charcoal leading-none">What kind of yoga are you looking for?</h2>
+            <p class="text-xs sm:text-sm text-mutedgray font-semibold font-sans">Each style has different goals. Filter on YogSetu and learn the difference.</p>
+          </div>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 relative border border-sage-300/40 rounded-[2rem] overflow-hidden bg-cream shadow-sm p-0 gap-0">
+            <div class="draw-line-h"></div>
+            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
+              <div class="draw-line-v hidden lg:block"></div>
+              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="activity" class="w-4.5 h-4.5"></i></span>
+              <div class="space-y-1.5">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Hatha Yoga</h3>
+                <p class="text-xs text-mutedgray leading-relaxed font-sans">Traditional posture-based practice, great for beginners and building foundation.</p>
+              </div>
+            </div>
+            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
+              <div class="draw-line-v hidden lg:block"></div>
+              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="zap" class="w-4.5 h-4.5"></i></span>
+              <div class="space-y-1.5">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Ashtanga / Power</h3>
+                <p class="text-xs text-mutedgray leading-relaxed font-sans">Dynamic, flowing sequences with breath; builds strength and focus.</p>
+              </div>
+            </div>
+            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
+              <div class="draw-line-v hidden lg:block"></div>
+              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="heart" class="w-4.5 h-4.5"></i></span>
+              <div class="space-y-1.5">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Prenatal Yoga</h3>
+                <p class="text-xs text-mutedgray leading-relaxed font-sans">Safe pregnancy-focused poses; supports mother and baby's wellbeing.</p>
+              </div>
+            </div>
+            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
+              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="shield-alert" class="w-4.5 h-4.5"></i></span>
+              <div class="space-y-1.5">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Therapeutic Yoga</h3>
+                <p class="text-xs text-mutedgray leading-relaxed font-sans">Targeted healing for back pain, stress, injuries, and chronic conditions.</p>
+              </div>
+            </div>
+            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
+              <div class="draw-line-v hidden lg:block"></div>
+              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="brain-circuit" class="w-4.5 h-4.5"></i></span>
+              <div class="space-y-1.5">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Meditation</h3>
+                <p class="text-xs text-mutedgray leading-relaxed font-sans">Stillness, breathwork, and mind training for clarity and calm.</p>
+              </div>
+            </div>
+            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
+              <div class="draw-line-v hidden lg:block"></div>
+              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="book-open" class="w-4.5 h-4.5"></i></span>
+              <div class="space-y-1.5">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Yoga of Education</h3>
+                <p class="text-xs text-mutedgray leading-relaxed font-sans">Yoga in schools; child-safe sequences and mindful learning tools.</p>
+              </div>
+            </div>
+            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
+              <div class="draw-line-v hidden lg:block"></div>
+              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="users" class="w-4.5 h-4.5"></i></span>
+              <div class="space-y-1.5">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Corporate Wellness</h3>
+                <p class="text-xs text-mutedgray leading-relaxed font-sans">Desk-friendly yoga programs for teams and workplace wellbeing.</p>
+              </div>
+            </div>
+            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
+              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="smile" class="w-4.5 h-4.5"></i></span>
+              <div class="space-y-1.5">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Yoga for Seniors</h3>
+                <p class="text-xs text-mutedgray leading-relaxed font-sans">Gentle, low-impact movement for flexibility, balance, and joint health.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 6: WHAT VERIFIED MEANS -->
+      <section id="verification" class="relative py-24 sm:py-32 bg-sand">
+        <div class="draw-line-h"></div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 space-y-16">
+          <div class="max-w-2xl space-y-4">
+            <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">05 // The Proof</span>
+            <h2 class="font-serif text-4xl sm:text-5xl font-bold text-charcoal leading-tight">What "verified" actually means on YogSetu</h2>
+            <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">Most directories make empty promises from unverified, unaccountable people. We change that entirely.</p>
+          </div>
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="p-8 bg-cream border border-sage-200 rounded-[2rem] space-y-4 shadow-sm">
+              <div class="w-10 h-10 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="file-check-2" class="w-5.5 h-5.5"></i></div>
+              <h3 class="font-serif text-xl font-bold text-charcoal">Certification Upload</h3>
+              <p class="text-xs text-mutedgray leading-relaxed font-sans">Every teacher uploads their training certificate and accreditation documents from their yoga college. The documents are reviewed by our team.</p>
+            </div>
+            <div class="p-8 bg-cream border border-sage-200 rounded-[2rem] space-y-4 shadow-sm">
+              <div class="w-10 h-10 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="verified" class="w-5.5 h-5.5"></i></div>
+              <h3 class="font-serif text-xl font-bold text-charcoal">Credential Badge</h3>
+              <p class="text-xs text-mutedgray leading-relaxed font-sans">Affiliated with top yoga bodies — Yoga Alliance, AYUSH, YTTAI, PYC, and other recognized certification bodies are checked in our verification process.</p>
+            </div>
+            <div class="p-8 bg-cream border border-sage-200 rounded-[2rem] space-y-4 shadow-sm">
+              <div class="w-10 h-10 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="refresh-cw" class="w-5.5 h-5.5"></i></div>
+              <h3 class="font-serif text-xl font-bold text-charcoal">Annual Audit</h3>
+              <p class="text-xs text-mutedgray leading-relaxed font-sans">Every teacher is re-verified annually. A teacher who continues to pass into this verified badge is checked and re-examined regularly.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 7: TEACHER PROFILES PREVIEW -->
+      <section id="teachers" class="relative py-24 bg-cream">
+        <div class="draw-line-h"></div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 space-y-12">
+          <div class="border-b border-sage-200 pb-6 relative">
+            <div class="draw-line-h"></div>
+            <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">06 // The Guides</span>
+            <h2 class="font-serif text-3.5xl sm:text-5xl font-bold text-charcoal mt-1 leading-none uppercase">Verified teacher profiles</h2>
+          </div>
+          <div class="grid md:grid-cols-2 relative border border-sage-300/40 rounded-[2.5rem] overflow-hidden bg-cream shadow-sm p-0 gap-0">
+            <div class="draw-line-h"></div>
+            
+            <!-- Card 1 -->
+            <div class="p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start hover:bg-sand/30 transition duration-300 relative">
+              <div class="draw-line-v hidden md:block"></div>
+              <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-[2rem] overflow-hidden border-4 border-sand shadow-md shrink-0">
+                <img src="images/yoga_1.png" alt="Anjali Sharma portrait" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
+              </div>
+              <div class="space-y-4 flex-1 flex flex-col justify-between text-center sm:text-left h-full">
+                <div class="space-y-2">
+                  <div>
+                    <span class="px-2.5 py-0.5 bg-sage-100 border border-sage-200 text-sage-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Hatha Yoga / Vinyasa</span>
+                    <h3 class="font-serif text-2xl font-bold text-charcoal mt-1">Anjali Sharma</h3>
+                  </div>
+                  <p class="text-xs font-bold text-sage-700 flex items-center justify-center sm:justify-start gap-1 font-mono"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Delhi</p>
+                  <div class="flex flex-wrap gap-1.5 justify-center sm:justify-start pt-1">
+                    <span class="px-2 py-0.5 bg-sand text-[10px] font-bold rounded-md text-mutedgray border border-sage-300">Hatha</span>
+                    <span class="px-2 py-0.5 bg-sand text-[10px] font-bold rounded-md text-mutedgray border border-sage-300">Vinyasa</span>
+                    <span class="px-2 py-0.5 bg-sand text-[10px] font-bold rounded-md text-mutedgray border border-sage-300">Beginners</span>
+                  </div>
+                </div>
+                <div class="pt-4">
+                  <a href="#teacher-profile/1" class="hover-trigger inline-block px-6 py-2.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs transition">Book slot</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start hover:bg-sand/30 transition duration-300 relative">
+              <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-[2rem] overflow-hidden border-4 border-sand shadow-md shrink-0">
+                <img src="images/yoga_2.png" alt="Shubir Sharma portrait" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
+              </div>
+              <div class="space-y-4 flex-1 flex flex-col justify-between text-center sm:text-left h-full">
+                <div class="space-y-2">
+                  <div>
+                    <span class="px-2.5 py-0.5 bg-sage-100 border border-sage-200 text-sage-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Ashtanga Yoga</span>
+                    <h3 class="font-serif text-2xl font-bold text-charcoal mt-1">Shubir Sharma</h3>
+                  </div>
+                  <p class="text-xs font-bold text-sage-700 flex items-center justify-center sm:justify-start gap-1 font-mono"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Mumbai</p>
+                  <div class="flex flex-wrap gap-1.5 justify-center sm:justify-start pt-1">
+                    <span class="px-2 py-0.5 bg-sand text-[10px] font-bold rounded-md text-mutedgray border border-sage-300">Ashtanga</span>
+                    <span class="px-2 py-0.5 bg-sand text-[10px] font-bold rounded-md text-mutedgray border border-sage-300">Pranayama</span>
+                  </div>
+                </div>
+                <div class="pt-4">
+                  <a href="#teacher-profile/2" class="hover-trigger inline-block px-6 py-2.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs transition">Book slot</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center pt-4">
+            <a href="#directory" class="hover-trigger inline-flex items-center gap-1 bg-cream border border-sage-300 px-6 py-3.5 rounded-xl font-bold text-sage-700 hover:border-sage-500 transition text-sm shadow-sm">
+              See all teachers
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 8: STUDENT TESTIMONIALS -->
+      <section class="relative py-24 sm:py-32 bg-sand">
+        <div class="draw-line-h"></div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 space-y-16">
+          <div class="max-w-xl text-center sm:text-left space-y-2">
+            <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">07 // The Voices</span>
+            <h2 class="font-serif text-3.5xl sm:text-5xl font-bold text-charcoal uppercase leading-none">What students say</h2>
+            <p class="text-xs text-mutedgray font-semibold font-sans mt-0.5">YogSetu connects students with rigorously verified teachers.</p>
+          </div>
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="p-8 bg-cream border border-sage-200 rounded-[2rem] space-y-4 shadow-sm flex flex-col justify-between">
+              <div class="space-y-4">
+                <div class="flex items-center gap-0.5 text-terracotta-500">
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-xs sm:text-sm text-mutedgray leading-relaxed italic font-sans">
+                  "I had tried two other teachers before. Hatha, Bach, and even therapeutic places. Neither had real training. Yesterday, this filter I got at YogSetu put me in a class certified in 35%. I actually felt I was going for a professional treatment, not a side job."
+                </p>
+              </div>
+              <div class="pt-4 border-t border-sage-100">
+                <h4 class="font-serif text-lg font-bold text-charcoal">Priya</h4>
+                <p class="text-[10px] text-mutedgray uppercase font-semibold font-mono">Hatha yoga • Bhopal</p>
+              </div>
+            </div>
+            <div class="p-8 bg-cream border border-sage-200 rounded-[2rem] space-y-4 shadow-sm flex flex-col justify-between">
+              <div class="space-y-4">
+                <div class="flex items-center gap-0.5 text-terracotta-500">
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-xs sm:text-sm text-mutedgray leading-relaxed italic font-sans">
+                  "I tried four classes a week — foundation-based mind-body practice. The YogSetu filter got me a reference I'd wanted. I met the credentials, checked reviews, booked a trial — it took less than 10 minutes."
+                </p>
+              </div>
+              <div class="pt-4 border-t border-sage-100">
+                <h4 class="font-serif text-lg font-bold text-charcoal">Arjun</h4>
+                <p class="text-[10px] text-mutedgray uppercase font-semibold font-mono">Therapeutic yoga • Bengaluru</p>
+              </div>
+            </div>
+            <div class="p-8 bg-cream border border-sage-200 rounded-[2rem] space-y-4 shadow-sm flex flex-col justify-between">
+              <div class="space-y-4">
+                <div class="flex items-center gap-0.5 text-terracotta-500">
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-xs sm:text-sm text-mutedgray leading-relaxed italic font-sans">
+                  "I found a class 3 months a week — foundation on mind-body practice. The philosophy sessions have deepened my understanding of yoga beyond exercise."
+                </p>
+              </div>
+              <div class="pt-4 border-t border-sage-100">
+                <h4 class="font-serif text-lg font-bold text-charcoal">Aryan</h4>
+                <p class="text-[10px] text-mutedgray uppercase font-semibold font-mono">Philosophy student • YogSetu</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 9: WELLNESS SYSTEM VS FITNESS CLASS -->
+      <section class="relative py-24 sm:py-32 bg-cream">
+        <div class="draw-line-h"></div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 grid lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-7 space-y-8">
+            <div class="space-y-2">
+              <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">08 // The Core Philosophy</span>
+              <h2 class="font-serif text-4xl sm:text-5xl font-bold text-charcoal leading-tight uppercase">Yoga as a complete system.<br><span class="italic text-terracotta-600 font-normal">Not a fitness class.</span></h2>
+              <p class="text-xs sm:text-sm text-mutedgray leading-relaxed font-sans max-w-xl">Most platforms treat yoga like a fitness product. YogSetu's classes are built around a wellness system powered by YogKulam's methods.</p>
+            </div>
+            <div class="space-y-6">
+              <div class="flex gap-4">
+                <span class="w-10 h-10 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center shrink-0"><i data-lucide="check" class="w-5 h-5"></i></span>
+                <div class="space-y-1">
+                  <h4 class="font-serif text-lg font-bold text-charcoal">Grounded in Bharatiya Tradition</h4>
+                  <p class="text-xs text-mutedgray leading-relaxed font-sans max-w-lg">YogSetu's educational infrastructure follows the authentic wellness-science that combines the full spectrum of yoga tradition.</p>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <span class="w-10 h-10 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center shrink-0"><i data-lucide="heart" class="w-5 h-5"></i></span>
+                <div class="space-y-1">
+                  <h4 class="font-serif text-lg font-bold text-charcoal">Somatic Support Tools</h4>
+                  <p class="text-xs text-mutedgray leading-relaxed font-sans max-w-lg">Therapeutic programs address back pain, chronic conditions, injuries, and stress. This is authentic yoga.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-5 p-8 sm:p-10 bg-sand border border-sage-300 rounded-[2.5rem] space-y-6 shadow-sm text-center">
+            <i data-lucide="flower" class="w-16 h-16 text-sage-600 mx-auto animate-pulse"></i>
+            <h3 class="font-serif text-2xl font-bold text-charcoal">A Simple Threshold</h3>
+            <p class="text-xs sm:text-sm text-mutedgray leading-relaxed font-sans">"If you're looking for a 30-minute online session with a random influencer, yoga can wait. If you're looking for real yoga — taught in Bharatiya tradition, with certified teachers — you're in the right place."</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 10: STATS -->
+      <section class="relative bg-sand">
+        <div class="draw-line-h"></div>
+        <div class="max-w-7xl mx-auto px-6 sm:px-12 py-20">
+          <div class="grid grid-cols-2 lg:grid-cols-4 relative border border-sage-300/40 rounded-[2rem] overflow-hidden bg-cream shadow-sm p-0 gap-0">
+            <div class="draw-line-h"></div>
+            <div class="py-10 px-6 text-center space-y-2 relative">
+              <div class="draw-line-v hidden lg:block"></div>
+              <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">VERIFIED TEACHERS</span>
+              <div class="font-serif text-4xl sm:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
+                <span class="stat-number" data-target="500">0</span>
+                <span class="text-terracotta-600 font-sans ml-1 text-2xl sm:text-3xl">+</span>
+              </div>
+              <p class="text-[10px] text-mutedgray font-semibold font-sans uppercase">Rigigorously audited</p>
+            </div>
+            <div class="py-10 px-6 text-center space-y-2 relative">
+              <div class="draw-line-v hidden lg:block"></div>
+              <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">CITIES COVERED</span>
+              <div class="font-serif text-4xl sm:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
+                <span class="stat-number" data-target="40">0</span>
+                <span class="text-terracotta-600 font-sans ml-1 text-2xl sm:text-3xl">+</span>
+              </div>
+              <p class="text-[10px] text-mutedgray font-semibold font-sans uppercase">Across India</p>
+            </div>
+            <div class="py-10 px-6 text-center space-y-2 relative">
+              <div class="draw-line-v hidden lg:block"></div>
+              <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">YOGA STYLES</span>
+              <div class="font-serif text-4xl sm:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
+                <span class="stat-number" data-target="12">0</span>
+                <span class="text-terracotta-600 font-sans ml-1 text-2xl sm:text-3xl">+</span>
+              </div>
+              <p class="text-[10px] text-mutedgray font-semibold font-sans uppercase">Somatic disciplines</p>
+            </div>
+            <div class="py-10 px-6 text-center space-y-2 relative">
+              <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">CERTIFIED STUDENTS</span>
+              <div class="font-serif text-4xl sm:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
+                <span class="stat-number" data-target="40000">0</span>
+                <span class="text-terracotta-600 font-sans ml-1 text-2xl sm:text-3xl">+</span>
+              </div>
+              <p class="text-[10px] text-mutedgray font-semibold font-sans uppercase">Via YogKulam network</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 11: FAQ -->
+      <section class="relative py-24 sm:py-32 bg-cream">
+        <div class="draw-line-h"></div>
+        <div class="max-w-4xl mx-auto px-6 space-y-12">
+          <div class="text-center space-y-2">
+            <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">09 // Direct Answers</span>
+            <h2 class="font-serif text-3.5xl sm:text-5xl font-bold text-charcoal uppercase">Frequently Asked Questions</h2>
+          </div>
+          <div class="space-y-4">
+            <div class="bg-sand/30 border border-sage-200 rounded-2xl overflow-hidden transition-all duration-300">
+              <button class="faq-toggle w-full p-6 text-left flex justify-between items-center hover:bg-sand/50 transition">
+                <span class="font-serif text-lg sm:text-xl font-bold text-charcoal">Is it free to browse and search?</span>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-sage-600 transform transition-transform duration-300"></i>
+              </button>
+              <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                <p class="p-6 pt-0 text-xs sm:text-sm text-mutedgray leading-relaxed font-sans border-t border-sage-200/40">
+                  Yes. No account needed, no credit card, no sign-up required to visit teacher profiles. You only sign up when you decide to contact the teacher — not before. YogSetu is a directory first.
+                </p>
+              </div>
+            </div>
+            <div class="bg-sand/30 border border-sage-200 rounded-2xl overflow-hidden transition-all duration-300">
+              <button class="faq-toggle w-full p-6 text-left flex justify-between items-center hover:bg-sand/50 transition">
+                <span class="font-serif text-lg sm:text-xl font-bold text-charcoal">How do I know a teacher's credentials are real?</span>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-sage-600 transform transition-transform duration-300"></i>
+              </button>
+              <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                <p class="p-6 pt-0 text-xs sm:text-sm text-mutedgray leading-relaxed font-sans border-t border-sage-200/40">
+                  We verify each teacher directly with their accreditation body. Our team and background checks performs credential verification. We have extensive experience.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAPTER 12: FINAL CTA -->
+      <section id="final-cta" class="relative py-24 sm:py-32 bg-sand">
+        <div class="draw-line-h"></div>
+        <div class="max-w-4xl mx-auto px-6 text-center space-y-8 relative z-10">
+          <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">10 // Take Action</span>
+          <h2 class="font-serif text-4.5xl sm:text-6.5xl font-bold text-charcoal leading-none uppercase tracking-tight">Your teacher is already here.<br><span class="italic text-terracotta-600 font-normal">It takes 3 minutes.</span></h2>
+          <p class="text-xs sm:text-sm text-mutedgray leading-relaxed font-sans max-w-xl mx-auto">YogSetu connects you with verified teachers who are already teaching. Fill this form and connect directly.</p>
+          <form id="landing-contact-form" class="max-w-lg mx-auto bg-cream border border-sage-200 p-8 rounded-[2.5rem] shadow-lg space-y-6 text-left">
+            <div class="relative">
+              <input type="text" id="contact-name" placeholder=" " class="floating-input w-full px-4 py-3 bg-sand/30 border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
+              <label for="contact-name" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Your Full Name</label>
+            </div>
+            <div class="relative">
+              <input type="email" id="contact-email" placeholder=" " class="floating-input w-full px-4 py-3 bg-sand/30 border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
+              <label for="contact-email" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Email Address</label>
+            </div>
+            <div class="relative">
+              <select id="contact-style" class="hover-trigger w-full px-4 py-3 bg-sand/30 border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition text-charcoal font-semibold">
+                <option value="Hatha">Hatha Yoga</option>
+                <option value="Ashtanga">Ashtanga / Power</option>
+                <option value="Prenatal">Prenatal Yoga</option>
+                <option value="Therapeutic">Therapeutic Yoga</option>
+              </select>
+            </div>
+            <div id="contact-submit-wrap" class="relative inline-block w-full py-2">
+              <button id="contact-submit-btn" type="submit" class="hover-trigger w-full py-3.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-sm shadow transition">Browse teachers now</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+       4. GLOBAL FOOTER
+       ========================================== -->
+  <footer class="bg-clay border-t border-sage-200 py-16 relative z-10 font-sans">
+    <div class="max-w-7xl mx-auto px-6 sm:px-12 grid md:grid-cols-12 gap-12">
+      <div class="md:col-span-5 space-y-4">
+        <div class="flex items-center gap-2 text-sage-800 font-serif text-2xl font-bold tracking-tight">
+          <span class="w-8 h-8 rounded-full bg-sage-600 flex items-center justify-center text-white">
+            <i data-lucide="flower-2" class="w-4.5 h-4.5"></i>
+          </span>
+          <span>YogSetu</span>
+        </div>
+        <p class="text-xs text-mutedgray leading-relaxed max-w-sm">
+          A verified yoga teacher directory — powered by YogKulam's credentialing infrastructure.
+        </p>
+      </div>
+
+      <div class="md:col-span-7 grid grid-cols-3 gap-6 font-mono text-xs">
+        <div class="space-y-3">
+          <div class="text-sage-800 font-bold uppercase tracking-wider text-[10px]">FOR STUDENTS</div>
+          <ul class="space-y-2 text-charcoal font-sans">
+            <li><a href="teachers.html" class="hover-trigger hover:text-sage-600 transition">Browse Directory</a></li>
+            <li><a href="index.html#how-it-works" class="hover-trigger hover:text-sage-600 transition">About Somatic Path</a></li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <div class="text-sage-800 font-bold uppercase tracking-wider text-[10px]">FOR TEACHERS</div>
+          <ul class="space-y-2 text-charcoal font-sans">
+            <li><a href="signup.html" class="hover-trigger hover:text-sage-600 transition">Submit Audit</a></li>
+            <li><a href="login.html" class="hover-trigger hover:text-sage-600 transition">Portal Login</a></li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <div class="text-sage-800 font-bold uppercase tracking-wider text-[10px]">COMPANY</div>
+          <ul class="space-y-2 text-charcoal font-sans">
+            <li><a href="index.html#about-us" class="hover-trigger hover:text-sage-600 transition">YogKulam</a></li>
+            <li><a href="contact.html" class="hover-trigger hover:text-sage-600 transition">Contact Desk</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 sm:px-12 pt-12 mt-12 border-t border-sage-300 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono text-mutedgray">
+      <span>YogSetu is a YogKulam initiative // yogsetu.com</span>
+      <span>&copy; 2026 YOGSETU. ALL RIGHTS RESERVED.</span>
+    </div>
+  </footer>
+
+  <!-- Application Script Modules -->
+  <script src="js/database.js" defer></script>
+  <script src="js/animations.js" defer></script>
+  <script src="js/booking.js" defer></script>
+
+  <!-- Add toast notification div -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl transition-all duration-300 transform translate-y-12 opacity-0 pointer-events-none bg-sage-700 text-white font-sans text-xs font-semibold">
+    <div id="toast-icon"></div>
+    <span id="toast-text"></span>
+  </div>
+
+</body>
+</html>
