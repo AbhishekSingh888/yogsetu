@@ -141,6 +141,9 @@ function initDirectoryListings() {
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
+    if (window.lenis) {
+      window.lenis.resize();
+    }
   }
 
   function filterData() {
@@ -242,14 +245,55 @@ function openBookingWizard(slot, teacher) {
   chosenSlotText.textContent = `SELECTED SLOT: ${slot}`;
   wizard.classList.remove('hidden');
 
-  setTimeout(() => {
-    wizard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 100);
+  // Disable scroll (Lenis integration)
+  if (window.lenis) {
+    window.lenis.stop();
+  } else {
+    document.body.style.overflow = 'hidden';
+  }
 
   goToStep(1);
 
   if (typeof gsap !== 'undefined') {
-    gsap.fromTo(wizard, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" });
+    // Reset positions
+    gsap.set('#booking-drawer-backdrop', { opacity: 0 });
+    gsap.set('#booking-drawer-panel', { x: "100%" });
+
+    // Animate backdrop and sliding panel in
+    gsap.to('#booking-drawer-backdrop', { opacity: 1, duration: 0.4, ease: "power2.out" });
+    gsap.to('#booking-drawer-panel', { x: "0%", duration: 0.5, ease: "power3.out" });
+  }
+}
+
+function closeBookingWizard() {
+  const wizard = document.getElementById('booking-wizard');
+  if (!wizard) return;
+
+  if (typeof gsap !== 'undefined') {
+    // Animate backdrop and sliding panel out
+    gsap.to('#booking-drawer-backdrop', { opacity: 0, duration: 0.3, ease: "power2.inOut" });
+    gsap.to('#booking-drawer-panel', {
+      x: "100%",
+      duration: 0.4,
+      ease: "power3.inOut",
+      onComplete: () => {
+        wizard.classList.add('hidden');
+        if (window.lenis) {
+          window.lenis.start();
+        } else {
+          document.body.style.overflow = '';
+        }
+        resetBookingWizard();
+      }
+    });
+  } else {
+    wizard.classList.add('hidden');
+    if (window.lenis) {
+      window.lenis.start();
+    } else {
+      document.body.style.overflow = '';
+    }
+    resetBookingWizard();
   }
 }
 
@@ -305,11 +349,26 @@ function initBookingWizard() {
   const closeBtn = document.getElementById('close-booking-btn');
   if (closeBtn) {
     closeBtn.onclick = () => {
-      const wizard = document.getElementById('booking-wizard');
-      if (wizard) wizard.classList.add('hidden');
-      resetBookingWizard();
+      closeBookingWizard();
     };
   }
+
+  const backdrop = document.getElementById('booking-drawer-backdrop');
+  if (backdrop) {
+    backdrop.onclick = () => {
+      closeBookingWizard();
+    };
+  }
+
+  // Escape key handler
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const wizard = document.getElementById('booking-wizard');
+      if (wizard && !wizard.classList.contains('hidden')) {
+        closeBookingWizard();
+      }
+    }
+  });
 
   const next1 = document.getElementById('booking-next-1');
   if (next1) {
@@ -436,6 +495,9 @@ function initJobsListings() {
 
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
+    }
+    if (window.lenis) {
+      window.lenis.resize();
     }
   }
 

@@ -212,6 +212,8 @@
   <!-- GSAP & ScrollTrigger CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis Smooth Scroll CDN -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
 </head>
 <body class="antialiased selection:bg-sage-500 selection:text-white relative min-h-screen">
 
@@ -236,19 +238,35 @@
       
       <!-- Brand Logo -->
       <a href="index.html" class="hover-trigger flex items-center gap-2.5 text-sage-700 font-serif text-2xl font-bold tracking-tight">
-        <span class="w-9 h-9 rounded-full bg-sage-600 flex items-center justify-center text-white shadow-md">
-          <i data-lucide="flower-2" class="w-5 h-5"></i>
-        </span>
+        <svg id="navMark" class="nav__mark w-9 h-9" viewBox="0 0 256 256" aria-hidden="true">
+          <path class="lotus-shadow" d="M128,200c-16,0-42.45605-.18018-72.88965-17.75146-30.43652-17.57227-40.28418-39.58643-43.43457-50.8545a7.95692,7.95692,0,0,1,5.68018-9.832c7.38183-1.8916,20.12793-3.60156,36.52588.2876-6.65186-22.24609-3.2544-39.50781-.415-48.248a8.01264,8.01264,0,0,1,9.3042-5.33984A77.46013,77.46013,0,0,1,94.09277,83.38916h-.001A107.00223,107.00223,0,0,0,88,120C88,178.18164,128,200,128,200Zm110.644-78.438c-7.38134-1.8916-20.12793-3.60156-36.52588.2876,6.65235-22.24609,3.2544-39.50781.415-48.248a8.01264,8.01264,0,0,0-9.3042-5.33984,77.46013,77.46013,0,0,0-31.32177,15.12744h.001A107.00223,107.00223,0,0,1,168,120c0,58.18164-40,80-40,80,16,0,42.45605-.18018,72.88965-17.75146,30.43652-17.57227,40.28418-39.58643,43.43457-50.8545a7.95654,7.95654,0,0,0,23.844-5.33984Z"/>
+          <path class="lotus-main" d="M250.47559,121.28906a15.82032,15.82032,0,0,0-9.84375-7.47558,80.056,80.056,0,0,0-27.957-1.85254,85.73919,85.73919,0,0,0-2.53125-40.8252,15.96151,15.96151,0,0,0-18.54394-10.706,82.54925,82.54925,0,0,0-26.15772,10.74463,94.04874,94.04874,0,0,0-27.84326-34.36963,15.9407,15.9407,0,0,0-19.19726,0A94.05373,94.05373,0,0,0,90.55762,71.17432,82.556,82.556,0,0,0,64.40234,60.42969a15.96653,15.96653,0,0,0-18.54589,10.707A85.73054,85.73054,0,0,0,43.3252,111.96a80.01629,80.01629,0,0,0-27.957,1.85352,15.957,15.957,0,0,0-11.3955,19.73828c3.53808,12.65332,14.36767,36.70508,47.13769,55.626C83.67676,207.979,112.45654,208,127.94629,208c.01562,0,.03027.00195.0459.00195L128,208.00146l.00781.00049c.01563,0,.03028-.00195.0459-.00195,15.48975,0,44.26953-.021,76.83594-18.82324,32.77-18.91992,43.59961-42.97168,47.13769-55.625A15.81809,15.81809,0,0,0,250.47559,121.28906ZM194.92578,76.07812c2.73926,8.43409,5.41943,23.521-.30029,42.96338a7.93219,7.93219,0,0,0-.29834,1.01612,104.57446,104.57446,0,0,1-9.54248,21.58886,119.23026,119.23026,0,0,1-17.38526,23.00538C172.46582,152.71582,176,137.96094,176,120a117.25342,117.25342,0,0,0-4.6875-33.57227A67.40026,67.40026,0,0,1,194.92578,76.07812ZM128.02832,49.627C137.64111,56.80176,160,78.02344,160,120c0,42.542-22.69238,63.5918-32,70.43652C118.69238,183.5918,96,162.542,96,120,96,78.02344,118.35889,56.80176,128.02832,49.627ZM61.07324,76.08008A67.35665,67.35665,0,0,1,84.6875,86.42773,117.256,117.256,0,0,0,80,120c0,17.96094,3.53418,32.71582,8.60059,44.65186a119.23026,119.23026,0,0,1-17.38526-23.00538,104.56282,104.56282,0,0,1-9.5498-21.61474,7.98057,7.98057,0,0,0-.27393-.93213C55.64941,99.62939,58.332,84.52148,61.07324,76.08008ZM19.3418,129.31152a66.43858,66.43858,0,0,1,28.34814-.57763,123.02667,123.02667,0,0,0,9.669,20.91259,138.33271,138.33271,0,0,0,33.27295,38.52344,121.79948,121.79948,0,0,1-31.52149-12.84863C31.25732,159.23926,22.26367,139.54883,19.3418,129.31152Zm177.54785,46.00879a121.79928,121.79928,0,0,1-31.521,12.84912,138.33687,138.33687,0,0,0,33.27246-38.523,123.02667,123.02667,0,0,0,9.66895-20.91259,67.45364,67.45364,0,0,1,28.30908.50927C233.73633,139.54883,224.74268,159.23926,196.88965,175.32031Z"/>
+        </svg>
         <span>YogSetu</span>
       </a>
 
       <!-- Compact Inline Navigation Links -->
       <div class="hidden md:flex items-center gap-8 font-mono text-[11px] uppercase tracking-widest text-mutedgray">
-        <a href="index.html" class="hover-trigger hover:text-sage-700">Home</a>
-        <a href="teachers.html" class="hover-trigger hover:text-sage-700">Teachers</a>
-        <a href="jobs.html" class="hover-trigger hover:text-sage-700">Jobs</a>
-        <a href="contact.html" class="hover-trigger hover:text-sage-700">Contact</a>
-        <a href="login.html" class="hover-trigger hover:text-sage-700 transition border-l border-sage-300/40 pl-8 duration-300">Portal</a>
+        <a href="index.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700">
+          <span class="roll-text block">Home</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Home</span>
+        </a>
+        <a href="teachers.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700">
+          <span class="roll-text block">Teachers</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Teachers</span>
+        </a>
+        <a href="jobs.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700">
+          <span class="roll-text block">Jobs</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Jobs</span>
+        </a>
+        <a href="contact.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700">
+          <span class="roll-text block">Contact</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Contact</span>
+        </a>
+        <a href="login.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700 transition border-l border-sage-300/40 pl-8 duration-300">
+          <span class="roll-text block">Portal</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Portal</span>
+        </a>
       </div>
 
       <!-- Navigation Toggles -->
@@ -388,172 +406,6 @@
             <div id="detail-slots" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
           </div>
 
-          <!-- Interactive Booking Wizard Container -->
-          <div id="booking-wizard" class="hidden mt-8 p-6 sm:p-8 bg-sand/30 border border-sage-300 rounded-[2rem] space-y-6 shadow-sm relative">
-            <button id="close-booking-btn" type="button" class="hover-trigger absolute top-6 right-6 text-mutedgray hover:text-charcoal transition" aria-label="Close booking wizard">
-              <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-
-            <div class="space-y-1">
-              <span class="text-[9px] font-mono uppercase tracking-widest text-sage-600 block">Somatic Session scheduler</span>
-              <h3 class="font-serif text-xl font-bold text-charcoal flex items-center gap-2">
-                <span>Schedule Consultation</span>
-              </h3>
-              <p id="booking-chosen-slot" class="text-xs text-sage-700 font-mono font-bold"></p>
-            </div>
-
-            <!-- Wizard Progress Steps -->
-            <div class="grid grid-cols-3 gap-2 border-b border-sage-300/40 pb-4 font-mono text-[9px] uppercase text-center">
-              <div id="step-tab-1" class="border-b-2 border-sage-600 pb-1 text-sage-700 font-bold">01 // Format</div>
-              <div id="step-tab-2" class="border-b border-sage-300/40 pb-1 text-mutedgray">02 // Details</div>
-              <div id="step-tab-3" class="border-b border-sage-300/40 pb-1 text-mutedgray">03 // Confirm</div>
-            </div>
-
-            <form id="booking-form" class="space-y-6">
-              <!-- Panel 1: Session Format -->
-              <div id="booking-step-1" class="space-y-4">
-                <span class="text-[10px] font-mono uppercase tracking-widest text-mutedgray block">Select Session Format</span>
-                <div class="grid grid-cols-2 gap-4">
-                  <label class="hover-trigger relative p-5 bg-cream rounded-2xl flex flex-col justify-between items-center gap-3 cursor-pointer select-none radio-card">
-                    <input type="radio" name="booking-format" value="Online" checked class="hidden">
-                    <i data-lucide="video" class="w-8 h-8 text-sage-600"></i>
-                    <div class="text-center font-sans">
-                      <span class="block text-xs font-bold text-charcoal uppercase">Online Video</span>
-                      <span class="block text-[9px] text-mutedgray mt-0.5">Google Meet callback</span>
-                    </div>
-                  </label>
-                  <label class="hover-trigger relative p-5 bg-cream rounded-2xl flex flex-col justify-between items-center gap-3 cursor-pointer select-none radio-card">
-                    <input type="radio" name="booking-format" value="In-Person" class="hidden">
-                    <i data-lucide="map-pin" class="w-8 h-8 text-sage-600"></i>
-                    <div class="text-center font-sans">
-                      <span class="block text-xs font-bold text-charcoal uppercase">In-Person</span>
-                      <span class="block text-[9px] text-mutedgray mt-0.5">At your home / studio</span>
-                    </div>
-                  </label>
-                </div>
-                <div class="pt-2 text-right">
-                  <button type="button" id="booking-next-1" class="hover-trigger px-6 py-2.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">Next Step &rarr;</button>
-                </div>
-              </div>
-
-              <!-- Panel 2: Student Details & Intake -->
-              <div id="booking-step-2" class="space-y-4 hidden">
-                <span class="text-[10px] font-mono uppercase tracking-widest text-mutedgray block">Your Somatic Profile</span>
-                
-                <div class="space-y-4 font-sans">
-                  <div class="relative">
-                    <input type="text" id="booking-student-name" placeholder=" " class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
-                    <label for="booking-student-name" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Full Name</label>
-                  </div>
-
-                  <div class="grid grid-cols-2 gap-4">
-                    <div class="relative">
-                      <input type="email" id="booking-student-email" placeholder=" " class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
-                      <label for="booking-student-email" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Email Address</label>
-                    </div>
-                    <div class="relative">
-                      <input type="tel" id="booking-student-phone" placeholder=" " class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
-                      <label for="booking-student-phone" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Phone Number</label>
-                    </div>
-                  </div>
-
-                  <div class="relative">
-                    <textarea id="booking-student-notes" placeholder=" " rows="3" class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition resize-none"></textarea>
-                    <label for="booking-student-notes" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Somatic / alignment concerns (e.g. back pain, pregnancy stage)</label>
-                  </div>
-                </div>
-
-                <div class="flex justify-between items-center pt-2">
-                  <button type="button" id="booking-back-2" class="hover-trigger px-5 py-2.5 bg-transparent border border-sage-300 text-charcoal hover:border-sage-500 font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">&larr; Back</button>
-                  <button type="button" id="booking-next-2" class="hover-trigger px-6 py-2.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">Next Step &rarr;</button>
-                </div>
-              </div>
-
-              <!-- Panel 3: Session Summary & Confirm -->
-              <div id="booking-step-3" class="space-y-4 hidden">
-                <span class="text-[10px] font-mono uppercase tracking-widest text-mutedgray block">Session Summary</span>
-                
-                <div class="bg-cream border border-sage-200 p-6 rounded-2xl space-y-4 text-xs font-mono">
-                  <div class="flex justify-between border-b border-sage-300/40 pb-2">
-                    <span class="text-mutedgray">TEACHER:</span>
-                    <span id="summary-teacher-name" class="font-bold text-charcoal font-sans"></span>
-                  </div>
-                  <div class="flex justify-between border-b border-sage-300/40 pb-2">
-                    <span class="text-mutedgray">SELECTED SLOT:</span>
-                    <span id="summary-slot" class="font-bold text-charcoal"></span>
-                  </div>
-                  <div class="flex justify-between border-b border-sage-300/40 pb-2">
-                    <span class="text-mutedgray">CLASS FORMAT:</span>
-                    <span id="summary-format" class="font-bold text-charcoal"></span>
-                  </div>
-                  <div class="flex justify-between border-b border-sage-300/40 pb-2">
-                    <span class="text-mutedgray">STUDENT:</span>
-                    <span id="summary-student-name" class="font-bold text-charcoal font-sans"></span>
-                  </div>
-                  <div class="flex justify-between text-sm pt-2">
-                    <span class="text-sage-700 font-bold">TOTAL FEE:</span>
-                    <span id="summary-rate" class="font-serif text-lg font-bold text-charcoal"></span>
-                  </div>
-                </div>
-
-                <div class="flex justify-between items-center pt-2">
-                  <button type="button" id="booking-back-3" class="hover-trigger px-5 py-2.5 bg-transparent border border-sage-300 text-charcoal hover:border-sage-500 font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">&larr; Back</button>
-                  <button type="submit" class="hover-trigger px-8 py-3.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition shadow-md font-mono">Confirm Booking &rarr;</button>
-                </div>
-              </div>
-            </form>
-
-            <!-- Panel 4: Success Ticket Receipt -->
-            <div id="booking-success-receipt" class="space-y-6 hidden">
-              <div class="flex flex-col items-center justify-center text-center space-y-2 py-4">
-                <div class="w-14 h-14 bg-sage-100 rounded-full flex items-center justify-center text-sage-700 animate-bounce">
-                  <i data-lucide="check-circle" class="w-8 h-8"></i>
-                </div>
-                <h3 class="font-serif text-2xl font-bold text-charcoal uppercase">Booking Confirmed</h3>
-                <p class="text-xs text-mutedgray leading-relaxed max-w-sm font-sans">Your appointment has been registered in YogKulam central database. A teacher will call you within 24 minutes.</p>
-              </div>
-
-              <!-- Monospaced Ticket Receipt -->
-              <div class="border-2 border-dashed border-sage-300 bg-cream p-6 rounded-2xl space-y-4 font-mono text-[11px] text-charcoal select-all organic-shadow">
-                <div class="text-center font-bold border-b border-sage-300 pb-2 text-[10px] text-sage-800 tracking-widest uppercase">
-                  YOGSETU // APPOINTMENT CONFIRMATION TICKET
-                </div>
-                <div class="space-y-2">
-                  <div class="flex justify-between">
-                    <span class="text-mutedgray">BOOKING ID:</span>
-                    <span id="receipt-booking-id" class="font-bold text-sage-700"></span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-mutedgray">REGISTERED TEACHER:</span>
-                    <span id="receipt-teacher" class="font-bold font-sans"></span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-mutedgray">SESSION FORMAT:</span>
-                    <span id="receipt-format" class="font-bold"></span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-mutedgray">DATE & TIME SLOT:</span>
-                    <span id="receipt-slot" class="font-bold"></span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-mutedgray">STUDENT NAME:</span>
-                    <span id="receipt-student" class="font-bold font-sans"></span>
-                  </div>
-                  <div class="flex justify-between border-t border-dashed border-sage-300 pt-2 text-xs font-bold">
-                    <span class="text-sage-700">STATUS:</span>
-                    <span class="text-sage-700 uppercase tracking-widest">Confirmed & Audited</span>
-                  </div>
-                </div>
-                <div class="text-center text-[9px] text-gray-400 border-t border-sage-300/40 pt-2 font-mono uppercase">
-                  YOGKULAM BHARATIYA WELLNESS INFRASTRUCTURE
-                </div>
-              </div>
-
-              <div class="text-center pt-2">
-                <button type="button" id="close-receipt-btn" class="hover-trigger px-6 py-2.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">Return to Directory</button>
-              </div>
-            </div>
-          </div>
 
         </div>
 
@@ -609,6 +461,188 @@
       <span>&copy; 2026 YOGSETU. ALL RIGHTS RESERVED.</span>
     </div>
   </footer>
+
+  <!-- Right-side Drawer Wrapper for Booking -->
+  <div id="booking-wizard" class="hidden fixed inset-0 z-50 flex justify-end">
+    <!-- Backdrop Overlay -->
+    <div id="booking-drawer-backdrop" class="absolute inset-0 bg-charcoal/40 backdrop-blur-sm opacity-0"></div>
+    
+    <!-- Drawer Panel -->
+    <div id="booking-drawer-panel" class="relative w-full max-w-md h-full bg-cream border-l border-sage-300 shadow-2xl p-6 sm:p-8 flex flex-col justify-between overflow-y-auto transform translate-x-full z-10">
+      <button id="close-booking-btn" type="button" class="hover-trigger absolute top-6 right-6 text-mutedgray hover:text-charcoal transition" aria-label="Close booking wizard">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="space-y-1">
+        <span class="text-[9px] font-mono uppercase tracking-widest text-sage-600 block">Somatic Session scheduler</span>
+        <h3 class="font-serif text-xl font-bold text-charcoal flex items-center gap-2">
+          <span>Schedule Consultation</span>
+        </h3>
+        <p id="booking-chosen-slot" class="text-xs text-sage-700 font-mono font-bold"></p>
+      </div>
+
+      <!-- Wizard Progress Steps -->
+      <div class="grid grid-cols-3 gap-2 border-b border-sage-300/40 pb-4 font-mono text-[9px] uppercase text-center mt-6">
+        <div id="step-tab-1" class="border-b-2 border-sage-600 pb-1 text-sage-700 font-bold">01 // Format</div>
+        <div id="step-tab-2" class="border-b border-sage-300/40 pb-1 text-mutedgray">02 // Details</div>
+        <div id="step-tab-3" class="border-b border-sage-300/40 pb-1 text-mutedgray">03 // Confirm</div>
+      </div>
+
+      <form id="booking-form" class="space-y-6 flex-1 flex flex-col justify-between pt-6">
+        <!-- Panel 1: Session Format -->
+        <div id="booking-step-1" class="space-y-4 flex-1 flex flex-col justify-between">
+          <div class="space-y-4">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-mutedgray block">Select Session Format</span>
+            <div class="grid grid-cols-2 gap-4">
+              <label class="hover-trigger relative p-5 bg-cream rounded-2xl flex flex-col justify-between items-center gap-3 cursor-pointer select-none radio-card">
+                <input type="radio" name="booking-format" value="Online" checked class="hidden">
+                <i data-lucide="video" class="w-8 h-8 text-sage-600"></i>
+                <div class="text-center font-sans">
+                  <span class="block text-xs font-bold text-charcoal uppercase">Online Video</span>
+                  <span class="block text-[9px] text-mutedgray mt-0.5">Google Meet callback</span>
+                </div>
+              </label>
+              <label class="hover-trigger relative p-5 bg-cream rounded-2xl flex flex-col justify-between items-center gap-3 cursor-pointer select-none radio-card">
+                <input type="radio" name="booking-format" value="In-Person" class="hidden">
+                <i data-lucide="map-pin" class="w-8 h-8 text-sage-600"></i>
+                <div class="text-center font-sans">
+                  <span class="block text-xs font-bold text-charcoal uppercase">In-Person</span>
+                  <span class="block text-[9px] text-mutedgray mt-0.5">At your home / studio</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="pt-6 text-right mt-auto">
+            <button type="button" id="booking-next-1" class="hover-trigger w-full px-6 py-2.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">Next Step &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Panel 2: Student Details & Intake -->
+        <div id="booking-step-2" class="space-y-4 hidden flex-1 flex flex-col justify-between">
+          <div class="space-y-4">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-mutedgray block">Your Somatic Profile</span>
+            
+            <div class="space-y-4 font-sans">
+              <div class="relative">
+                <input type="text" id="booking-student-name" placeholder=" " class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
+                <label for="booking-student-name" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Full Name</label>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="relative">
+                  <input type="email" id="booking-student-email" placeholder=" " class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
+                  <label for="booking-student-email" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Email Address</label>
+                </div>
+                <div class="relative">
+                  <input type="tel" id="booking-student-phone" placeholder=" " class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
+                  <label for="booking-student-phone" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Phone Number</label>
+                </div>
+              </div>
+
+              <div class="relative">
+                <textarea id="booking-student-notes" placeholder=" " rows="3" class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition resize-none"></textarea>
+                <label for="booking-student-notes" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Somatic / alignment concerns (e.g. back pain, pregnancy stage)</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center pt-6 mt-auto">
+            <button type="button" id="booking-back-2" class="hover-trigger px-5 py-2.5 bg-transparent border border-sage-300 text-charcoal hover:border-sage-500 font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">&larr; Back</button>
+            <button type="button" id="booking-next-2" class="hover-trigger px-6 py-2.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">Next Step &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Panel 3: Session Summary & Confirm -->
+        <div id="booking-step-3" class="space-y-4 hidden flex-1 flex flex-col justify-between">
+          <div class="space-y-4">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-mutedgray block">Session Summary</span>
+            
+            <div class="bg-cream border border-sage-200 p-6 rounded-2xl space-y-4 text-xs font-mono">
+              <div class="flex justify-between border-b border-sage-300/40 pb-2">
+                <span class="text-mutedgray">TEACHER:</span>
+                <span id="summary-teacher-name" class="font-bold text-charcoal font-sans"></span>
+              </div>
+              <div class="flex justify-between border-b border-sage-300/40 pb-2">
+                <span class="text-mutedgray">SELECTED SLOT:</span>
+                <span id="summary-slot" class="font-bold text-charcoal"></span>
+              </div>
+              <div class="flex justify-between border-b border-sage-300/40 pb-2">
+                <span class="text-mutedgray">CLASS FORMAT:</span>
+                <span id="summary-format" class="font-bold text-charcoal"></span>
+              </div>
+              <div class="flex justify-between border-b border-sage-300/40 pb-2">
+                <span class="text-mutedgray">STUDENT:</span>
+                <span id="summary-student-name" class="font-bold text-charcoal font-sans"></span>
+              </div>
+              <div class="flex justify-between text-sm pt-2">
+                <span class="text-sage-700 font-bold">TOTAL FEE:</span>
+                <span id="summary-rate" class="font-serif text-lg font-bold text-charcoal"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center pt-6 mt-auto">
+            <button type="button" id="booking-back-3" class="hover-trigger px-5 py-2.5 bg-transparent border border-sage-300 text-charcoal hover:border-sage-500 font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">&larr; Back</button>
+            <button type="submit" class="hover-trigger px-8 py-3.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition shadow-md font-mono font-bold">Confirm Booking &rarr;</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Panel 4: Success Ticket Receipt -->
+      <div id="booking-success-receipt" class="space-y-6 hidden flex-1 flex flex-col justify-between pt-6">
+        <div class="space-y-4">
+          <div class="flex flex-col items-center justify-center text-center space-y-2 py-4">
+            <div class="w-14 h-14 bg-sage-100 rounded-full flex items-center justify-center text-sage-700 animate-bounce">
+              <i data-lucide="check-circle" class="w-8 h-8"></i>
+            </div>
+            <h3 class="font-serif text-2xl font-bold text-charcoal uppercase">Booking Confirmed</h3>
+            <p class="text-xs text-mutedgray leading-relaxed max-w-sm font-sans">Your appointment has been registered in YogKulam central database. A teacher will call you within 24 minutes.</p>
+          </div>
+
+          <!-- Monospaced Ticket Receipt -->
+          <div class="border-2 border-dashed border-sage-300 bg-cream p-6 rounded-2xl space-y-4 font-mono text-[11px] text-charcoal select-all organic-shadow">
+            <div class="text-center font-bold border-b border-sage-300 pb-2 text-[10px] text-sage-800 tracking-widest uppercase">
+              YOGSETU // APPOINTMENT CONFIRMATION TICKET
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-mutedgray">BOOKING ID:</span>
+                <span id="receipt-booking-id" class="font-bold text-sage-700"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-mutedgray">REGISTERED TEACHER:</span>
+                <span id="receipt-teacher" class="font-bold font-sans"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-mutedgray">SESSION FORMAT:</span>
+                <span id="receipt-format" class="font-bold"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-mutedgray">DATE & TIME SLOT:</span>
+                <span id="receipt-slot" class="font-bold"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-mutedgray">STUDENT NAME:</span>
+                <span id="receipt-student" class="font-bold font-sans"></span>
+              </div>
+              <div class="flex justify-between border-t border-dashed border-sage-300 pt-2 text-xs font-bold">
+                <span class="text-sage-700">STATUS:</span>
+                <span class="text-sage-700 uppercase tracking-widest">Confirmed & Audited</span>
+              </div>
+            </div>
+            <div class="text-center text-[9px] text-gray-400 border-t border-sage-300/40 pt-2 font-mono uppercase">
+              YOGKULAM BHARATIYA WELLNESS INFRASTRUCTURE
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center pt-6 mt-auto">
+          <button type="button" id="close-receipt-btn" class="hover-trigger w-full px-6 py-2.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition font-mono">Return to Directory</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- Toast notification element -->
   <div id="toast" class="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl transition-all duration-300 transform translate-y-12 opacity-0 pointer-events-none bg-sage-700 text-white font-sans text-xs font-semibold">

@@ -243,6 +243,68 @@
       transform: translateY(-22px) scale(0.85);
       color: var(--color-accent);
     }
+
+    /* ---------------- LOADER LOTUS ANIMATIONS ---------------- */
+    body.is-loading {
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    #preloader-circle {
+      transition: border-color 0.5s ease, background-color 0.5s ease;
+    }
+    
+    .loader__lotus {
+      position: relative;
+      transform-origin: center center;
+      will-change: transform;
+    }
+    
+    .lotus-shadow {
+      fill: var(--color-accent);
+      opacity: 0.25;
+    }
+    
+    .lotus-main {
+      fill: var(--color-text);
+    }
+    
+    .lotus-shadow, .lotus-main {
+      fill-opacity: 0;
+      stroke: var(--color-accent);
+      stroke-opacity: 1;
+      stroke-width: 1.4;
+      transition: fill-opacity 0.6s ease, stroke-opacity 0.6s ease;
+    }
+    
+    /* Nav brand logo defaults */
+    .nav__mark {
+      opacity: 1;
+      transition: opacity 0.35s ease;
+    }
+    
+    .nav__mark .lotus-shadow {
+      fill: var(--color-accent);
+      fill-opacity: 0.25;
+      stroke-opacity: 0;
+    }
+    
+    .nav__mark .lotus-main {
+      fill: var(--color-accent);
+      fill-opacity: 1;
+      stroke-opacity: 0;
+    }
+    
+    /* Only hide navbar brand logo when preloader exists in the DOM */
+    #preloader ~ nav #navMark {
+      opacity: 0;
+    }
+    
+    /* Setup hero container for circular mask reveal */
+    #home {
+      clip-path: circle(0px at 50% 50%);
+      will-change: clip-path;
+    }
   </style>
 
   <!-- Lucide Icons CDN -->
@@ -251,8 +313,10 @@
   <!-- GSAP & ScrollTrigger CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis Smooth Scroll CDN -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
 </head>
-<body class="antialiased selection:bg-sage-500 selection:text-white relative min-h-screen">
+<body class="is-loading antialiased selection:bg-sage-500 selection:text-white relative min-h-screen">
 
   <!-- Tactile Paper Overlay -->
   <div class="paper-texture"></div>
@@ -275,9 +339,12 @@
     </div>
     
     <div class="my-auto flex flex-col items-center justify-center text-center">
-      <div id="preloader-circle" class="w-32 h-32 rounded-full bg-sand border border-sage-300 flex items-center justify-center relative mb-6">
+      <div id="preloader-circle" class="w-40 h-40 rounded-full bg-sand border border-sage-300 flex items-center justify-center relative mb-6">
         <div class="absolute inset-0 rounded-full border border-sage-500 animate-ping opacity-20"></div>
-        <i data-lucide="flower-2" class="w-14 h-14 text-sage-700 spin-lotus"></i>
+        <svg id="loaderLotus" class="loader__lotus" viewBox="0 0 256 256" width="96" height="96">
+          <path class="lotus-shadow" d="M128,200c-16,0-42.45605-.18018-72.88965-17.75146-30.43652-17.57227-40.28418-39.58643-43.43457-50.8545a7.95692,7.95692,0,0,1,5.68018-9.832c7.38183-1.8916,20.12793-3.60156,36.52588.2876-6.65186-22.24609-3.2544-39.50781-.415-48.248a8.01264,8.01264,0,0,1,9.3042-5.33984A77.46013,77.46013,0,0,1,94.09277,83.38916h-.001A107.00223,107.00223,0,0,0,88,120C88,178.18164,128,200,128,200Zm110.644-78.438c-7.38134-1.8916-20.12793-3.60156-36.52588.2876,6.65235-22.24609,3.2544-39.50781.415-48.248a8.01264,8.01264,0,0,0-9.3042-5.33984,77.46013,77.46013,0,0,0-31.32177,15.12744h.001A107.00223,107.00223,0,0,1,168,120c0,58.18164-40,80-40,80,16,0,42.45605-.18018,72.88965-17.75146,30.43652-17.57227,40.28418-39.58643,43.43457-50.8545a7.95654,7.95654,0,0,0,23.844-5.33984Z"/>
+          <path class="lotus-main" d="M250.47559,121.28906a15.82032,15.82032,0,0,0-9.84375-7.47558,80.056,80.056,0,0,0-27.957-1.85254,85.73919,85.73919,0,0,0-2.53125-40.8252,15.96151,15.96151,0,0,0-18.54394-10.706,82.54925,82.54925,0,0,0-26.15772,10.74463,94.04874,94.04874,0,0,0-27.84326-34.36963,15.9407,15.9407,0,0,0-19.19726,0A94.05373,94.05373,0,0,0,90.55762,71.17432,82.556,82.556,0,0,0,64.40234,60.42969a15.96653,15.96653,0,0,0-18.54589,10.707A85.73054,85.73054,0,0,0,43.3252,111.96a80.01629,80.01629,0,0,0-27.957,1.85352,15.957,15.957,0,0,0-11.3955,19.73828c3.53808,12.65332,14.36767,36.70508,47.13769,55.626C83.67676,207.979,112.45654,208,127.94629,208c.01562,0,.03027.00195.0459.00195L128,208.00146l.00781.00049c.01563,0,.03028-.00195.0459-.00195,15.48975,0,44.26953-.021,76.83594-18.82324,32.77-18.91992,43.59961-42.97168,47.13769-55.625A15.81809,15.81809,0,0,0,250.47559,121.28906ZM194.92578,76.07812c2.73926,8.43409,5.41943,23.521-.30029,42.96338a7.93219,7.93219,0,0,0-.29834,1.01612,104.57446,104.57446,0,0,1-9.54248,21.58886,119.23026,119.23026,0,0,1-17.38526,23.00538C172.46582,152.71582,176,137.96094,176,120a117.25342,117.25342,0,0,0-4.6875-33.57227A67.40026,67.40026,0,0,1,194.92578,76.07812ZM128.02832,49.627C137.64111,56.80176,160,78.02344,160,120c0,42.542-22.69238,63.5918-32,70.43652C118.69238,183.5918,96,162.542,96,120,96,78.02344,118.35889,56.80176,128.02832,49.627ZM61.07324,76.08008A67.35665,67.35665,0,0,1,84.6875,86.42773,117.256,117.256,0,0,0,80,120c0,17.96094,3.53418,32.71582,8.60059,44.65186a119.23026,119.23026,0,0,1-17.38526-23.00538,104.56282,104.56282,0,0,1-9.5498-21.61474,7.98057,7.98057,0,0,0-.27393-.93213C55.64941,99.62939,58.332,84.52148,61.07324,76.08008ZM19.3418,129.31152a66.43858,66.43858,0,0,1,28.34814-.57763,123.02667,123.02667,0,0,0,9.669,20.91259,138.33271,138.33271,0,0,0,33.27295,38.52344,121.79948,121.79948,0,0,1-31.52149-12.84863C31.25732,159.23926,22.26367,139.54883,19.3418,129.31152Zm177.54785,46.00879a121.79928,121.79928,0,0,1-31.521,12.84912,138.33687,138.33687,0,0,0,33.27246-38.523,123.02667,123.02667,0,0,0,9.66895-20.91259,67.45364,67.45364,0,0,1,28.30908.50927C233.73633,139.54883,224.74268,159.23926,196.88965,175.32031Z"/>
+        </svg>
       </div>
       
       <div class="font-serif text-4xl font-bold flex items-baseline">
@@ -303,19 +370,35 @@
       
       <!-- Brand Logo -->
       <a href="index.html" class="hover-trigger flex items-center gap-2.5 text-sage-700 font-serif text-2xl font-bold tracking-tight">
-        <span class="w-9 h-9 rounded-full bg-sage-600 flex items-center justify-center text-white shadow-md">
-          <i data-lucide="flower-2" class="w-5 h-5"></i>
-        </span>
+        <svg id="navMark" class="nav__mark w-9 h-9" viewBox="0 0 256 256" aria-hidden="true">
+          <path class="lotus-shadow" d="M128,200c-16,0-42.45605-.18018-72.88965-17.75146-30.43652-17.57227-40.28418-39.58643-43.43457-50.8545a7.95692,7.95692,0,0,1,5.68018-9.832c7.38183-1.8916,20.12793-3.60156,36.52588.2876-6.65186-22.24609-3.2544-39.50781-.415-48.248a8.01264,8.01264,0,0,1,9.3042-5.33984A77.46013,77.46013,0,0,1,94.09277,83.38916h-.001A107.00223,107.00223,0,0,0,88,120C88,178.18164,128,200,128,200Zm110.644-78.438c-7.38134-1.8916-20.12793-3.60156-36.52588.2876,6.65235-22.24609,3.2544-39.50781.415-48.248a8.01264,8.01264,0,0,0-9.3042-5.33984,77.46013,77.46013,0,0,0-31.32177,15.12744h.001A107.00223,107.00223,0,0,1,168,120c0,58.18164-40,80-40,80,16,0,42.45605-.18018,72.88965-17.75146,30.43652-17.57227,40.28418-39.58643,43.43457-50.8545a7.95654,7.95654,0,0,0,23.844-5.33984Z"/>
+          <path class="lotus-main" d="M250.47559,121.28906a15.82032,15.82032,0,0,0-9.84375-7.47558,80.056,80.056,0,0,0-27.957-1.85254,85.73919,85.73919,0,0,0-2.53125-40.8252,15.96151,15.96151,0,0,0-18.54394-10.706,82.54925,82.54925,0,0,0-26.15772,10.74463,94.04874,94.04874,0,0,0-27.84326-34.36963,15.9407,15.9407,0,0,0-19.19726,0A94.05373,94.05373,0,0,0,90.55762,71.17432,82.556,82.556,0,0,0,64.40234,60.42969a15.96653,15.96653,0,0,0-18.54589,10.707A85.73054,85.73054,0,0,0,43.3252,111.96a80.01629,80.01629,0,0,0-27.957,1.85352,15.957,15.957,0,0,0-11.3955,19.73828c3.53808,12.65332,14.36767,36.70508,47.13769,55.626C83.67676,207.979,112.45654,208,127.94629,208c.01562,0,.03027.00195.0459.00195L128,208.00146l.00781.00049c.01563,0,.03028-.00195.0459-.00195,15.48975,0,44.26953-.021,76.83594-18.82324,32.77-18.91992,43.59961-42.97168,47.13769-55.625A15.81809,15.81809,0,0,0,250.47559,121.28906ZM194.92578,76.07812c2.73926,8.43409,5.41943,23.521-.30029,42.96338a7.93219,7.93219,0,0,0-.29834,1.01612,104.57446,104.57446,0,0,1-9.54248,21.58886,119.23026,119.23026,0,0,1-17.38526,23.00538C172.46582,152.71582,176,137.96094,176,120a117.25342,117.25342,0,0,0-4.6875-33.57227A67.40026,67.40026,0,0,1,194.92578,76.07812ZM128.02832,49.627C137.64111,56.80176,160,78.02344,160,120c0,42.542-22.69238,63.5918-32,70.43652C118.69238,183.5918,96,162.542,96,120,96,78.02344,118.35889,56.80176,128.02832,49.627ZM61.07324,76.08008A67.35665,67.35665,0,0,1,84.6875,86.42773,117.256,117.256,0,0,0,80,120c0,17.96094,3.53418,32.71582,8.60059,44.65186a119.23026,119.23026,0,0,1-17.38526-23.00538,104.56282,104.56282,0,0,1-9.5498-21.61474,7.98057,7.98057,0,0,0-.27393-.93213C55.64941,99.62939,58.332,84.52148,61.07324,76.08008ZM19.3418,129.31152a66.43858,66.43858,0,0,1,28.34814-.57763,123.02667,123.02667,0,0,0,9.669,20.91259,138.33271,138.33271,0,0,0,33.27295,38.52344,121.79948,121.79948,0,0,1-31.52149-12.84863C31.25732,159.23926,22.26367,139.54883,19.3418,129.31152Zm177.54785,46.00879a121.79928,121.79928,0,0,1-31.521,12.84912,138.33687,138.33687,0,0,0,33.27246-38.523,123.02667,123.02667,0,0,0,9.66895-20.91259,67.45364,67.45364,0,0,1,28.30908.50927C233.73633,139.54883,224.74268,159.23926,196.88965,175.32031Z"/>
+        </svg>
         <span>YogSetu</span>
       </a>
 
       <!-- Compact Inline Navigation Links -->
       <div class="hidden md:flex items-center gap-8 font-mono text-[11px] uppercase tracking-widest text-mutedgray">
-        <a href="index.html" class="hover-trigger hover:text-sage-700">Home</a>
-        <a href="teachers.html" class="hover-trigger hover:text-sage-700">Teachers</a>
-        <a href="jobs.html" class="hover-trigger hover:text-sage-700">Jobs</a>
-        <a href="contact.html" class="hover-trigger hover:text-sage-700">Contact</a>
-        <a href="login.html" class="hover-trigger hover:text-sage-700 transition border-l border-sage-300/40 pl-8 duration-300">Portal</a>
+        <a href="index.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700">
+          <span class="roll-text block">Home</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Home</span>
+        </a>
+        <a href="teachers.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700">
+          <span class="roll-text block">Teachers</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Teachers</span>
+        </a>
+        <a href="jobs.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700">
+          <span class="roll-text block">Jobs</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Jobs</span>
+        </a>
+        <a href="contact.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700">
+          <span class="roll-text block">Contact</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Contact</span>
+        </a>
+        <a href="login.html" class="roll-link hover-trigger relative block overflow-hidden hover:text-sage-700 transition border-l border-sage-300/40 pl-8 duration-300">
+          <span class="roll-text block">Portal</span>
+          <span class="roll-text block absolute top-0 left-0 pointer-events-none">Portal</span>
+        </a>
       </div>
 
       <!-- Navigation Toggles -->
@@ -393,7 +476,8 @@
       <!-- CHAPTER 1: HERO (THE HOOK) -->
       <section id="home" class="min-h-screen flex flex-col justify-center pt-28 pb-16 px-6 sm:px-12 relative overflow-hidden select-none bg-sand">
         <!-- Hero Background Image & Dark Overlay -->
-        <div class="absolute inset-0 bg-cover bg-center opacity-70 pointer-events-none z-0" style="background-image: url('images/hero_background.jpg');"></div>
+        <div id="hero-bg-default" class="absolute inset-0 bg-cover bg-center opacity-70 pointer-events-none z-0" style="background-image: url('images/hero-bg01.jpg'); will-change: transform, opacity; transform-origin: center center;"></div>
+        <div id="hero-bg-hover" class="absolute inset-0 bg-cover bg-center opacity-0 pointer-events-none z-0" style="background-image: url('images/hero_background.jpg'); will-change: transform, opacity; transform-origin: center center;"></div>
         <div class="absolute inset-0 bg-black/65 pointer-events-none z-0"></div>
         
         <div class="draw-line-h"></div>
@@ -403,23 +487,27 @@
           </div>
         </div>
 
-        <div class="max-w-7xl w-full mx-auto grid lg:grid-cols-12 gap-12 items-end relative z-10">
-          <div class="lg:col-span-4 order-2 lg:order-1 space-y-4 text-left font-mono text-xs text-stone-300">
-            <div class="text-terracotta-300 uppercase tracking-widest font-bold font-mono">YOGSETU WELLNESS DIALECT</div>
-            <p class="leading-relaxed">Most yoga teachers in India are unverified, uninformed, and unavailable. We list only credentialed teachers filtered by somatic discipline, city, and schedule.</p>
-            <div class="pt-2">
-              <a href="#directory" class="hover-trigger inline-flex items-center gap-2 text-stone-100 hover:text-terracotta-300 transition font-bold uppercase tracking-wider text-xs">
-                <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
-                <span>Browse vetted directory</span>
+        <div class="max-w-7xl w-full mx-auto relative z-10 text-left space-y-8">
+          <div class="hero-eyebrow text-terracotta-500 uppercase tracking-widest font-bold font-mono text-sm sm:text-xs opacity-0">
+            You've tried yoga classes before.
+          </div>
+          <h1 id="hero-title" class="font-serif text-[8vw] sm:text-[6vw] lg:text-[5vw] font-black uppercase leading-[1.0] tracking-tighter text-stone-100">
+            <div class="split-parent"><span class="split-child">They didn't</span></div><br>
+            <div class="split-parent text-terracotta-500 italic font-normal"><span class="split-child">stick.</span></div><br>
+            <div class="split-parent"><span class="split-child">Here's the real reason.</span></div>
+          </h1>
+          <div class="hero-details max-w-2xl space-y-6 opacity-0">
+            <p class="leading-relaxed text-stone-300 font-sans text-sm sm:text-base">
+              Most yoga teachers in India are unverified, uninformed, and unavailable within 2 days. YogSetu lists only rigorously verified, credentialed teachers filtered by style, city, schedule, and budget. Find your match and book a trial class today.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-4 items-center">
+              <a href="#directory" class="hover-trigger inline-block px-6 py-3.5 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-sm transition">
+                Browse teachers
+              </a>
+              <a id="cta-six-months" href="#directory" class="hover-trigger inline-block px-6 py-3.5 bg-transparent border border-stone-400 hover:border-white text-stone-300 hover:text-white font-bold rounded-xl text-xs uppercase tracking-wider transition">
+                Give 6 months
               </a>
             </div>
-          </div>
-          <div class="lg:col-span-8 order-1 lg:order-2 text-right">
-            <h1 id="hero-title" class="font-serif text-[10vw] sm:text-[7vw] lg:text-[7vw] font-black uppercase leading-[0.9] tracking-tighter text-stone-100">
-              <div class="split-parent"><span class="split-child">Yoga didn't</span></div><br>
-              <div class="split-parent text-terracotta-500 italic font-normal"><span class="split-child">stick.</span></div><br>
-              <div class="split-parent"><span class="split-child">Here is why.</span></div>
-            </h1>
           </div>
         </div>
 
@@ -547,68 +635,38 @@
             </div>
 
             <!-- Right Column: Content -->
-            <div class="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between min-h-[500px]">
+            <div id="steps-content-col" class="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between min-h-[500px] transition-colors duration-500 bg-white">
               
               <!-- Panel 1 -->
               <div data-panel="1" class="step-content-panel space-y-6">
+                <div class="max-w-sm mx-auto w-full rounded-[1.5rem] overflow-hidden bg-sand/30">
+                  <img src="images/audit.png" alt="YogSetu Search Filters Showcase" class="w-full h-auto object-cover block">
+                </div>
                 <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
                   Filter by yoga style (Hatha, Ashtanga, Prenatal, Therapeutic), location or online, timing, language preference — and more options specific to teaching approach.
                 </p>
-                <div class="w-full bg-sand/40 border border-sage-300/60 rounded-[2rem] p-6 space-y-6 shadow-sm">
-                  <div class="space-y-2">
-                    <span class="text-[10px] font-mono uppercase tracking-widest text-sage-600 block">01 // SELECT SOMATIC DISCIPLINE</span>
-                    <div class="flex flex-wrap gap-2">
-                      <button data-style="Hatha" class="sandbox-style-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Hatha</button>
-                      <button data-style="Ashtanga" class="sandbox-style-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Ashtanga</button>
-                      <button data-style="Prenatal" class="sandbox-style-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Prenatal</button>
-                      <button data-style="Therapeutic" class="sandbox-style-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Therapeutic</button>
-                    </div>
-                  </div>
-                  <div class="space-y-2">
-                    <span class="text-[10px] font-mono uppercase tracking-widest text-sage-600 block">02 // SELECT LOCATION</span>
-                    <div class="flex flex-wrap gap-2">
-                      <button data-loc="Delhi" class="sandbox-loc-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Delhi</button>
-                      <button data-loc="Mumbai" class="sandbox-loc-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Mumbai</button>
-                      <button data-loc="Bengaluru" class="sandbox-loc-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Bengaluru</button>
-                      <button data-loc="Online" class="sandbox-loc-btn px-4 py-2 rounded-xl text-xs font-bold border border-sage-300 bg-cream text-charcoal hover:border-sage-500 transition-all duration-200">Online</button>
-                    </div>
-                  </div>
-                  <div class="border-t border-sage-300/40 pt-4 space-y-3">
-                    <span class="text-[10px] font-mono uppercase tracking-widest text-sage-600 block">03 // DYNAMIC VETTED RESULT</span>
-                    <div id="sandbox-result-card" class="bg-cream border border-sage-200 p-4 rounded-2xl flex items-center justify-between gap-4 transition-all duration-300">
-                      <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-sage-100 flex items-center justify-center text-sage-700 shrink-0">
-                          <i data-lucide="flower-2" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                          <h4 id="sandbox-teacher-name" class="font-serif text-sm font-bold text-charcoal font-sans">Select filters above</h4>
-                          <p id="sandbox-teacher-desc" class="text-[10px] text-mutedgray leading-tight">Click on a somatic style and location to preview a verified guide match.</p>
-                        </div>
-                      </div>
-                      <button id="sandbox-cta-btn" class="hidden px-4 py-2 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider transition">Connect</button>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <!-- Panel 2 -->
               <div data-panel="2" class="step-content-panel space-y-6 hidden">
+                
+                <div class="max-w-sm mx-auto w-full rounded-[1.5rem] overflow-hidden  bg-sand/30 ">
+                  <img src="images/audit.png" alt="YogSetu Profile Audit Verification Showcase" class="w-full h-auto object-cover block">
+                </div>
                 <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
                   See detailed certification data, accreditation by top bodies like Yoga Alliance or AYUSH/CCRYN, teaching experience, session format, and individual teacher video — before anyone answers the phone.
                 </p>
-                <div class="aspect-[16/9] w-full bg-sand/30 border border-sage-200 rounded-[2rem] flex items-center justify-center p-4 md:p-8">
-                  <i data-lucide="shield-check" class="w-12 h-12 md:w-16 md:h-16 text-sage-600 animate-pulse"></i>
-                </div>
               </div>
 
               <!-- Panel 3 -->
               <div data-panel="3" class="step-content-panel space-y-6 hidden">
+                
+                <div class="max-w-sm mx-auto w-full rounded-[1.5rem] overflow-hidden  bg-sand/30 ">
+                  <img src="images/booking.png" alt="YogSetu Direct Booking Showcase" class="w-full h-auto object-cover block">
+                </div>
                 <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
                   Contact teachers through their verified profiles and attend their first session. No middlemen. No hidden platform take. Straight to your teacher within 24 minutes of first visiting YogSetu.
                 </p>
-                <div class="aspect-[16/9] w-full bg-sand/30 border border-sage-200 rounded-[2rem] flex items-center justify-center p-4 md:p-8">
-                  <i data-lucide="check-circle" class="w-12 h-12 md:w-16 md:h-16 text-sage-600 animate-pulse"></i>
-                </div>
               </div>
 
             </div>

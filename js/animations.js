@@ -7,6 +7,88 @@
 let isDarkMode = false;
 
 // ------------------------------------------
+// LENIS SMOOTH SCROLL INITIALIZATION
+// ------------------------------------------
+let lenis = null;
+if (typeof Lenis !== 'undefined') {
+  // Inject Lenis styling dynamically and promote animated elements to GPU layer for max FPS
+  const style = document.createElement('style');
+  style.id = 'lenis-styles';
+  style.textContent = `
+    html.lenis, html.lenis body {
+      height: auto;
+    }
+    .lenis.lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+    .lenis.lenis-smooth [data-lenis-prevent] {
+      overscroll-behavior: contain;
+    }
+    .lenis.lenis-stopped {
+      overflow: hidden;
+    }
+    .lenis.lenis-scrolling iframe {
+      pointer-events: none;
+    }
+    #custom-cursor-dot,
+    #custom-cursor-ring,
+    .draw-line-h,
+    .draw-line-v,
+    .organic-shadow-hover {
+      will-change: transform;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Initialize Lenis with disabled internal RAF (autoRaf: false) to prevent frame double-handling
+  lenis = new Lenis({
+    autoRaf: false,
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential easing for ultra-smoothness
+    direction: 'vertical',
+    gestureOrientation: 'vertical',
+    smoothWheel: true,
+    wheelMultiplier: 1.0,
+    touchMultiplier: 1.2,
+    infinite: false,
+  });
+
+  // Share lenis globally
+  window.lenis = lenis;
+
+  // Connect to GSAP ScrollTrigger
+  lenis.on('scroll', () => {
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.update();
+    }
+  });
+
+  // Integrate Lenis frame ticks with GSAP ticker loop (primary driver)
+  if (typeof gsap !== 'undefined') {
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    // Disable lag smoothing to prevent jumping / drops
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  // Anchor links smooth scrolling interceptor
+  document.addEventListener('click', (e) => {
+    const anchor = e.target.closest('a[href^="#"]');
+    if (!anchor) return;
+
+    const href = anchor.getAttribute('href');
+    if (href === '#' || href.startsWith('#teacher-profile/')) return;
+
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      lenis.scrollTo(target);
+    }
+  });
+}
+
+// ------------------------------------------
 // FAIL-SAFE PRELOADER TIMEOUT
 // ------------------------------------------
 const preloaderTimeout = setTimeout(() => {
@@ -26,7 +108,7 @@ const preloaderTimeout = setTimeout(() => {
     if (cursorDot) cursorDot.style.display = 'none';
     if (cursorRing) cursorRing.style.display = 'none';
   }
-}, 2500);
+}, 5000);
 
 // Vanilla preloader counter fallback
 function runVanillaPreloaderCounter() {
@@ -224,6 +306,11 @@ function initFaqAccordions() {
         content.style.maxHeight = content.scrollHeight + "px";
         if (icon) icon.classList.add('rotate-180');
       }
+
+      // Notify Lenis that the scrollable height has updated after layout transition
+      if (window.lenis) {
+        setTimeout(() => window.lenis.resize(), 300);
+      }
     };
   });
 }
@@ -315,64 +402,188 @@ function initStepsDeck() {
           panel.classList.add('hidden');
         }
       });
+
+
+
+      // Notify Lenis that layout heights changed
+      if (window.lenis) {
+        setTimeout(() => window.lenis.resize(), 550);
+      }
     });
   });
 }
 
 // ------------------------------------------
-// GSAP PRELOADER & HERO TIMELINE
+// GSAP PRELOADER & HERO TIMELINE (NELUMBO MORPH DESIGN)
 // ------------------------------------------
+function setupPaths(scope) {
+  if (!scope) return;
+  const paths = scope.querySelectorAll('.lotus-shadow, .lotus-main');
+  paths.forEach(p => {
+    const len = p.getTotalLength();
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+  });
+}
+
+function heroEntrance() {
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  tl.fromTo('.split-child',
+    { yPercent: 100 },
+    { yPercent: 0, duration: 1.1, stagger: 0.12 },
+    0
+  ).fromTo('.hero-eyebrow',
+    { opacity: 0, y: 15 },
+    { opacity: 1, y: 0, duration: 0.8 },
+    0.3
+  ).fromTo('.hero-details',
+    { opacity: 0, y: 20 },
+    { opacity: 1, y: 0, duration: 1.0 },
+    0.45
+  ).fromTo('.absolute.bottom-8',
+    { opacity: 0, y: 10 },
+    { opacity: 1, y: 0, duration: 0.8 },
+    0.85
+  );
+  return tl;
+}
+
+function reveal() {
+  const loaderLotus = document.getElementById('loaderLotus');
+  const navMark = document.getElementById('navMark');
+  const loaderEl = document.getElementById('preloader');
+  const hero = document.getElementById('home');
+
+  if (!loaderLotus || !navMark || !loaderEl || !hero) {
+    // Fallback if elements are missing
+    if (loaderEl) loaderEl.remove();
+    document.body.classList.remove('is-loading');
+    if (hero) hero.style.clipPath = 'none';
+    if (navMark) navMark.style.opacity = '1';
+    clearTimeout(preloaderTimeout);
+    initScrollTriggers();
+    heroEntrance();
+    return;
+  }
+
+  // Position morph calculations
+  const loaderRect = loaderLotus.getBoundingClientRect();
+  const navRect = navMark.getBoundingClientRect();
+  const scale = navRect.width / loaderRect.width;
+  const dx = (navRect.left + navRect.width / 2) - (loaderRect.left + loaderRect.width / 2);
+  const dy = (navRect.top + navRect.height / 2) - (loaderRect.top + loaderRect.height / 2);
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      loaderEl.style.display = 'none';
+      loaderEl.remove();
+      document.body.classList.remove('is-loading');
+      hero.style.clipPath = 'none';
+      clearTimeout(preloaderTimeout);
+      initScrollTriggers();
+    }
+  });
+
+  tl.to(loaderLotus, { x: dx, y: dy, scale: scale, duration: 1.1, ease: 'power3.inOut' }, 0)
+    .to(hero, { clipPath: 'circle(150% at 50% 50%)', duration: 1.25, ease: 'power3.inOut' }, 0.1)
+    .to(loaderLotus, { opacity: 0, duration: 0.25 }, 0.9)
+    .to(navMark, { opacity: 1, duration: 0.35 }, 1.0)
+    .to(loaderEl, { opacity: 0, duration: 0.45 }, 1.05)
+    .add(heroEntrance(), 1.15);
+}
+
 if (typeof gsap !== 'undefined') {
-  const preloaderCount = document.getElementById('preloader-counter');
+  const preloader = document.getElementById('preloader');
   
-  if (document.getElementById('preloader')) {
-    const countVal = { value: 0 };
-    const preloaderTL = gsap.timeline({
-      onComplete: () => {
-        clearTimeout(preloaderTimeout);
-        initScrollTriggers();
+  if (preloader) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      preloader.remove();
+      document.body.classList.remove('is-loading');
+      const hero = document.getElementById('home');
+      if (hero) hero.style.clipPath = 'none';
+      const navMark = document.getElementById('navMark');
+      if (navMark) navMark.style.opacity = '1';
+      clearTimeout(preloaderTimeout);
+      initScrollTriggers();
+      
+      gsap.set('.split-child', { yPercent: 0 });
+      gsap.set('.hero-eyebrow', { opacity: 1, y: 0 });
+      gsap.set('.hero-details', { opacity: 1, y: 0 });
+      gsap.set('.absolute.bottom-8', { opacity: 1, y: 0 });
+    } else {
+      const loaderLotus = document.getElementById('loaderLotus');
+      setupPaths(loaderLotus);
+
+      const preloaderCount = document.getElementById('preloader-counter');
+      const countVal = { value: 0 };
+      
+      const preloaderTL = gsap.timeline();
+
+      // Breathing loop on preloader circle
+      gsap.to('#preloader-circle', {
+        scale: 1.1,
+        duration: 1.4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+      });
+
+      const shadowPath = loaderLotus ? loaderLotus.querySelector('.lotus-shadow') : null;
+      const mainPath = loaderLotus ? loaderLotus.querySelector('.lotus-main') : null;
+
+      // Draw SVG outlines and increment counter
+      preloaderTL.to(countVal, {
+        value: 100,
+        duration: 2.2,
+        ease: "power2.out",
+        onUpdate: () => {
+          if (preloaderCount) preloaderCount.textContent = Math.floor(countVal.value).toString().padStart(2, '0');
+        }
+      }, 0);
+
+      if (shadowPath) {
+        preloaderTL.to(shadowPath, {
+          strokeDashoffset: 0,
+          duration: 1.4,
+          ease: "power2.inOut"
+        }, 0.1);
       }
-    });
 
-    // Animate breathing scale on preloader
-    gsap.to('#preloader-circle', {
-      scale: 1.15,
-      duration: 1.3,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    });
-
-    // Count up
-    preloaderTL.to(countVal, {
-      value: 100,
-      duration: 2.2,
-      ease: "power2.out",
-      onUpdate: () => {
-        if (preloaderCount) preloaderCount.textContent = Math.floor(countVal.value).toString().padStart(2, '0');
+      if (mainPath) {
+        preloaderTL.to(mainPath, {
+          strokeDashoffset: 0,
+          duration: 1.6,
+          ease: "power2.inOut"
+        }, 0.35);
       }
-    });
 
-    // Wipe out preloader
-    preloaderTL.to('#preloader', {
-      yPercent: -100,
-      duration: 1.1,
-      ease: "expo.inOut",
-      delay: 0.1,
-      onComplete: () => {
-        const preEl = document.getElementById('preloader');
-        if (preEl) preEl.remove();
+      // Fill colors when drawing completes
+      preloaderTL.to([shadowPath, mainPath], {
+        fillOpacity: 1,
+        strokeOpacity: 0,
+        duration: 0.65,
+        ease: "power2.out"
+      }, 1.7);
+
+      // Subtle lotus pulse on complete
+      if (loaderLotus) {
+        preloaderTL.to(loaderLotus, {
+          scale: 1.08,
+          duration: 0.35,
+          ease: "power2.out",
+          yoyo: true,
+          repeat: 1
+        }, 1.75);
       }
-    });
 
-    // Reveal split-text hero elements
-    preloaderTL.fromTo('.split-child',
-      { yPercent: 100 },
-      { yPercent: 0, duration: 1.1, ease: "power4.out", stagger: 0.15 },
-      "-=0.6"
-    );
+      // Chain the reveal morph sequence at the end of preloading
+      preloaderTL.add(reveal, 2.5);
+    }
   } else {
     // Immediate scroll trigger activation for preloader-less pages
+    const navMark = document.getElementById('navMark');
+    if (navMark) navMark.style.opacity = '1';
     initScrollTriggers();
   }
 }
@@ -434,6 +645,7 @@ function initScrollTriggers() {
     });
   });
 
+
   // Staggered reveals for other content grids
   ScrollTrigger.create({
     trigger: '#styles',
@@ -461,6 +673,134 @@ function initScrollTriggers() {
 }
 
 // ------------------------------------------
+// HERO BACKGROUND TRANSITION (CROSS-FADE ON HOVER)
+// ------------------------------------------
+function initHeroHoverBg() {
+  if (typeof gsap === 'undefined') return;
+
+  const ctaSixMonths = document.getElementById('cta-six-months');
+  const bgHover = document.getElementById('hero-bg-hover');
+  const bgDefault = document.getElementById('hero-bg-default');
+
+  if (ctaSixMonths && bgHover) {
+    ctaSixMonths.addEventListener('mouseenter', () => {
+      // Cross-fade: scale up and fade in the secondary background
+      gsap.to(bgHover, {
+        opacity: 0.75,
+        scale: 1.05,
+        duration: 0.8,
+        ease: 'power2.out'
+      });
+      if (bgDefault) {
+        gsap.to(bgDefault, {
+          opacity: 0.15,
+          scale: 0.98,
+          duration: 0.8,
+          ease: 'power2.out'
+        });
+      }
+    });
+
+    ctaSixMonths.addEventListener('mouseleave', () => {
+      // Revert transition
+      gsap.to(bgHover, {
+        opacity: 0,
+        scale: 1.0,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+      if (bgDefault) {
+        gsap.to(bgDefault, {
+          opacity: 0.70,
+          scale: 1.0,
+          duration: 0.6,
+          ease: 'power2.out'
+        });
+      }
+    });
+  }
+}
+
+// ------------------------------------------
+// NAV BAR ROLLING TEXT EFFECT ON HOVER
+// ------------------------------------------
+function initNavRollingLinks() {
+  if (typeof gsap === 'undefined') return;
+
+  // Inject styles dynamically
+  const style = document.createElement('style');
+  style.textContent = `
+    .roll-link {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      height: 1.25em;
+      line-height: 1.25em;
+    }
+    .roll-text {
+      display: block;
+      white-space: nowrap;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Helper to split text element content into character spans
+  function splitTextIntoChars(element) {
+    const text = element.textContent.trim();
+    element.innerHTML = '';
+    const chars = [];
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const span = document.createElement('span');
+      span.style.display = 'inline-block';
+      if (char === ' ') {
+        span.innerHTML = '&nbsp;';
+      } else {
+        span.textContent = char;
+      }
+      element.appendChild(span);
+      chars.push(span);
+    }
+    return chars;
+  }
+
+  // Bind stagger hover timeline for each link
+  document.querySelectorAll('.roll-link').forEach(link => {
+    const texts = link.querySelectorAll('.roll-text');
+    if (texts.length >= 2) {
+      const chars1 = splitTextIntoChars(texts[0]);
+      const chars2 = splitTextIntoChars(texts[1]);
+
+      const tlHover = gsap.timeline({ paused: true })
+        .to(chars1, {
+          yPercent: -100,
+          duration: 0.8,
+          ease: "power3.inOut",
+          stagger: 0.03
+        }, 0)
+        .fromTo(chars2, 
+          { yPercent: 100 },
+          {
+            yPercent: 0,
+            duration: 0.8,
+            ease: "power3.inOut",
+            stagger: 0.03
+          },
+          0.1
+        );
+
+      link.addEventListener('mouseenter', () => {
+        tlHover.play();
+      });
+      link.addEventListener('mouseleave', () => {
+        tlHover.reverse();
+      });
+    }
+  });
+}
+
+// ------------------------------------------
 // DOM INITIALIZATION
 // ------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
@@ -469,6 +809,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initFaqAccordions();
   initDramaticMenu();
   initStepsDeck();
+  initHeroHoverBg();
+  initNavRollingLinks();
 
   // Bind theme toggle click
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
