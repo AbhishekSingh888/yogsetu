@@ -305,6 +305,17 @@
       clip-path: circle(0px at 50% 50%);
       will-change: clip-path;
     }
+
+    /* Mobile Responsive Fixes */
+    @media (hover: none) and (pointer: coarse) {
+      body { cursor: default !important; }
+      #custom-cursor-dot, #custom-cursor-ring { display: none !important; }
+      .paper-texture { display: none; }
+    }
+
+    @media screen and (max-width: 768px) {
+      input, select, textarea { font-size: 16px !important; }
+    }
   </style>
 
   <!-- Lucide Icons CDN -->
@@ -326,8 +337,8 @@
   <div id="custom-cursor-ring"></div>
 
   <!-- Ambient mesh blurs -->
-  <div class="fixed top-12 left-12 w-[35rem] h-[35rem] bg-sage-500/10 rounded-full filter blur-[120px] pointer-events-none z-0"></div>
-  <div class="fixed bottom-12 right-12 w-[30rem] h-[30rem] bg-terracotta-500/10 rounded-full filter blur-[120px] pointer-events-none z-0"></div>
+  <div class="fixed top-12 left-12 w-[15rem] h-[15rem] sm:w-[25rem] sm:h-[25rem] lg:w-[35rem] lg:h-[35rem] bg-sage-500/10 rounded-full filter blur-[60px] sm:blur-[80px] lg:blur-[120px] pointer-events-none z-0"></div>
+  <div class="fixed bottom-12 right-12 w-[15rem] h-[15rem] sm:w-[25rem] sm:h-[25rem] lg:w-[30rem] lg:h-[30rem] bg-terracotta-500/10 rounded-full filter blur-[60px] sm:blur-[80px] lg:blur-[120px] pointer-events-none z-0"></div>
 
   <!-- ==========================================
        1. DEEP BREATHING PRELOADER SCREEN
@@ -444,7 +455,7 @@
 
       <!-- Right side: Giant Typographic Navigation links -->
             <!-- Right side: Compact Navigation links -->
-      <div class="col-span-full md:col-span-7 flex flex-col gap-6 text-right font-serif text-3xl sm:text-5xl font-bold uppercase select-none">
+      <div class="col-span-full md:col-span-7 flex flex-col gap-6 text-center sm:text-right font-serif text-3xl sm:text-5xl font-bold uppercase select-none">
         <div class="overflow-hidden menu-link-wrapper">
           <a href="index.html" class="menu-link block hover:text-sage-600 hover:italic">Home</a>
         </div>
@@ -491,7 +502,7 @@
           <div class="hero-eyebrow text-terracotta-500 uppercase tracking-widest font-bold font-mono text-sm sm:text-xs opacity-0">
             You've tried yoga classes before.
           </div>
-          <h1 id="hero-title" class="font-serif text-[8vw] sm:text-[6vw] lg:text-[5vw] font-black uppercase leading-[1.0] tracking-tighter text-stone-100">
+          <h1 id="hero-title" class="font-serif text-[clamp(2rem,8vw,5rem)] sm:text-[6vw] lg:text-[5vw] font-black uppercase leading-[1.0] tracking-tighter text-stone-100">
             <div class="split-parent"><span class="split-child">They didn't</span></div><br>
             <div class="split-parent text-terracotta-500 italic font-normal"><span class="split-child">stick.</span></div><br>
             <div class="split-parent"><span class="split-child">Here's the real reason.</span></div>
@@ -567,7 +578,7 @@
         <div class="max-w-7xl mx-auto px-6 sm:px-12 grid lg:grid-cols-12 gap-12 items-center">
           <div class="lg:col-span-5 relative">
             <div class="aspect-square w-full rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-cream">
-              <img src="images/yoga_1.png" alt="YogKulam training teachers" class="w-full h-full object-cover">
+              <img src="images/yoga_1.png" alt="YogKulam training teachers" loading="lazy" class="w-full h-full object-cover">
             </div>
           </div>
           <div class="lg:col-span-7 space-y-6 lg:pl-6">
@@ -635,7 +646,7 @@
             </div>
 
             <!-- Right Column: Content -->
-            <div id="steps-content-col" class="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between min-h-[500px] transition-colors duration-500 bg-white">
+            <div id="steps-content-col" class="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between min-h-0 lg:min-h-[500px] transition-colors duration-500 bg-white">
               
               <!-- Panel 1 -->
               <div data-panel="1" class="step-content-panel space-y-6">
@@ -675,7 +686,7 @@
       </section>
 
       <!-- DIAGONAL MARQUEE BAND -->
-      <div class="w-full overflow-hidden bg-sage-600 text-cream py-6 -rotate-1.5 scale-[1.03] my-12 z-20 relative shadow-lg">
+      <div class="w-full overflow-hidden bg-sage-600 text-cream py-6 rotate-0 scale-100 sm:-rotate-1.5 sm:scale-[1.03] my-12 z-20 relative shadow-lg">
         <div class="marquee-inner-left font-mono text-sm uppercase tracking-widest flex gap-8 whitespace-nowrap">
           <span>VERIFIED TEACHERS • AYUSH CERTIFIED • YOGA ALLIANCE • DIRECT CONNECTION • NO MIDDLEMEN • SOMATIC HEALTHCARE • AUTHENTIC TRADITION •</span>
           <span>VERIFIED TEACHERS • AYUSH CERTIFIED • YOGA ALLIANCE • DIRECT CONNECTION • NO MIDDLEMEN • SOMATIC HEALTHCARE • AUTHENTIC TRADITION •</span>
@@ -693,63 +704,63 @@
           </div>
           <div class="grid sm:grid-cols-2 lg:grid-cols-4 relative border border-sage-300/40 rounded-[2rem] overflow-hidden bg-cream shadow-sm p-0 gap-0">
             <div class="draw-line-h"></div>
-            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
-              <div class="draw-line-v hidden lg:block"></div>
-              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="activity" class="w-4.5 h-4.5"></i></span>
+    <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-auto sm:h-64 relative">
+      <div class="draw-line-v hidden lg:block"></div>
+      <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="activity" class="w-4.5 h-4.5"></i></span>
               <div class="space-y-1.5">
                 <h3 class="font-serif text-xl font-bold text-charcoal">Hatha Yoga</h3>
                 <p class="text-xs text-mutedgray leading-relaxed font-sans">Traditional posture-based practice, great for beginners and building foundation.</p>
               </div>
             </div>
-            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
-              <div class="draw-line-v hidden lg:block"></div>
-              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="zap" class="w-4.5 h-4.5"></i></span>
+    <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-auto sm:h-64 relative">
+      <div class="draw-line-v hidden lg:block"></div>
+      <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="zap" class="w-4.5 h-4.5"></i></span>
               <div class="space-y-1.5">
                 <h3 class="font-serif text-xl font-bold text-charcoal">Ashtanga / Power</h3>
                 <p class="text-xs text-mutedgray leading-relaxed font-sans">Dynamic, flowing sequences with breath; builds strength and focus.</p>
               </div>
             </div>
-            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
-              <div class="draw-line-v hidden lg:block"></div>
-              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="heart" class="w-4.5 h-4.5"></i></span>
+    <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-auto sm:h-64 relative">
+      <div class="draw-line-v hidden lg:block"></div>
+      <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="heart" class="w-4.5 h-4.5"></i></span>
               <div class="space-y-1.5">
                 <h3 class="font-serif text-xl font-bold text-charcoal">Prenatal Yoga</h3>
                 <p class="text-xs text-mutedgray leading-relaxed font-sans">Safe pregnancy-focused poses; supports mother and baby's wellbeing.</p>
               </div>
             </div>
-            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
-              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="shield-alert" class="w-4.5 h-4.5"></i></span>
+    <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-auto sm:h-64 relative">
+      <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="shield-alert" class="w-4.5 h-4.5"></i></span>
               <div class="space-y-1.5">
                 <h3 class="font-serif text-xl font-bold text-charcoal">Therapeutic Yoga</h3>
                 <p class="text-xs text-mutedgray leading-relaxed font-sans">Targeted healing for back pain, stress, injuries, and chronic conditions.</p>
               </div>
             </div>
-            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
-              <div class="draw-line-v hidden lg:block"></div>
-              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="brain-circuit" class="w-4.5 h-4.5"></i></span>
+    <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-auto sm:h-64 relative">
+      <div class="draw-line-v hidden lg:block"></div>
+      <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="brain-circuit" class="w-4.5 h-4.5"></i></span>
               <div class="space-y-1.5">
                 <h3 class="font-serif text-xl font-bold text-charcoal">Meditation</h3>
                 <p class="text-xs text-mutedgray leading-relaxed font-sans">Stillness, breathwork, and mind training for clarity and calm.</p>
               </div>
             </div>
-            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
-              <div class="draw-line-v hidden lg:block"></div>
-              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="book-open" class="w-4.5 h-4.5"></i></span>
+    <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-auto sm:h-64 relative">
+      <div class="draw-line-v hidden lg:block"></div>
+      <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="book-open" class="w-4.5 h-4.5"></i></span>
               <div class="space-y-1.5">
                 <h3 class="font-serif text-xl font-bold text-charcoal">Yoga of Education</h3>
                 <p class="text-xs text-mutedgray leading-relaxed font-sans">Yoga in schools; child-safe sequences and mindful learning tools.</p>
               </div>
             </div>
-            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
-              <div class="draw-line-v hidden lg:block"></div>
-              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="users" class="w-4.5 h-4.5"></i></span>
+    <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-auto sm:h-64 relative">
+      <div class="draw-line-v hidden lg:block"></div>
+      <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="users" class="w-4.5 h-4.5"></i></span>
               <div class="space-y-1.5">
                 <h3 class="font-serif text-xl font-bold text-charcoal">Corporate Wellness</h3>
                 <p class="text-xs text-mutedgray leading-relaxed font-sans">Desk-friendly yoga programs for teams and workplace wellbeing.</p>
               </div>
             </div>
-            <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-64 relative">
-              <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="smile" class="w-4.5 h-4.5"></i></span>
+    <div class="p-8 bg-cream space-y-4 hover:bg-sand/40 transition duration-300 flex flex-col justify-between h-auto sm:h-64 relative">
+      <span class="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center"><i data-lucide="smile" class="w-4.5 h-4.5"></i></span>
               <div class="space-y-1.5">
                 <h3 class="font-serif text-xl font-bold text-charcoal">Yoga for Seniors</h3>
                 <p class="text-xs text-mutedgray leading-relaxed font-sans">Gentle, low-impact movement for flexibility, balance, and joint health.</p>
@@ -804,7 +815,7 @@
             <div class="p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start hover:bg-sand/30 transition duration-300 relative">
               <div class="draw-line-v hidden md:block"></div>
               <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-[2rem] overflow-hidden border-4 border-sand shadow-md shrink-0">
-                <img src="images/yoga_1.png" alt="Anjali Sharma portrait" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
+                <img src="images/yoga_1.png" alt="Anjali Sharma portrait" loading="lazy" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
               </div>
               <div class="space-y-4 flex-1 flex flex-col justify-between text-center sm:text-left h-full">
                 <div class="space-y-2">
@@ -828,7 +839,7 @@
             <!-- Card 2 -->
             <div class="p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start hover:bg-sand/30 transition duration-300 relative">
               <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-[2rem] overflow-hidden border-4 border-sand shadow-md shrink-0">
-                <img src="images/yoga_2.png" alt="Shubir Sharma portrait" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
+                <img src="images/yoga_2.png" alt="Shubir Sharma portrait" loading="lazy" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
               </div>
               <div class="space-y-4 flex-1 flex flex-col justify-between text-center sm:text-left h-full">
                 <div class="space-y-2">
@@ -970,7 +981,7 @@
             <div class="py-10 px-6 text-center space-y-2 relative">
               <div class="draw-line-v hidden lg:block"></div>
               <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">VERIFIED TEACHERS</span>
-              <div class="font-serif text-4xl sm:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
+              <div class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
                 <span class="stat-number" data-target="500">0</span>
                 <span class="text-terracotta-600 font-sans ml-1 text-2xl sm:text-3xl">+</span>
               </div>
@@ -979,7 +990,7 @@
             <div class="py-10 px-6 text-center space-y-2 relative">
               <div class="draw-line-v hidden lg:block"></div>
               <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">CITIES COVERED</span>
-              <div class="font-serif text-4xl sm:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
+              <div class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
                 <span class="stat-number" data-target="40">0</span>
                 <span class="text-terracotta-600 font-sans ml-1 text-2xl sm:text-3xl">+</span>
               </div>
@@ -988,7 +999,7 @@
             <div class="py-10 px-6 text-center space-y-2 relative">
               <div class="draw-line-v hidden lg:block"></div>
               <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">YOGA STYLES</span>
-              <div class="font-serif text-4xl sm:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
+              <div class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
                 <span class="stat-number" data-target="12">0</span>
                 <span class="text-terracotta-600 font-sans ml-1 text-2xl sm:text-3xl">+</span>
               </div>
@@ -996,7 +1007,7 @@
             </div>
             <div class="py-10 px-6 text-center space-y-2 relative">
               <span class="text-xs font-mono uppercase tracking-widest text-sage-600 block">CERTIFIED STUDENTS</span>
-              <div class="font-serif text-4xl sm:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
+              <div class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charcoal flex justify-center items-baseline leading-none">
                 <span class="stat-number" data-target="40000">0</span>
                 <span class="text-terracotta-600 font-sans ml-1 text-2xl sm:text-3xl">+</span>
               </div>
@@ -1093,7 +1104,7 @@
         </p>
       </div>
 
-      <div class="md:col-span-7 grid grid-cols-3 gap-6 font-mono text-xs">
+      <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 font-mono text-xs">
         <div class="space-y-3">
           <div class="text-sage-800 font-bold uppercase tracking-wider text-[10px]">FOR STUDENTS</div>
           <ul class="space-y-2 text-charcoal font-sans">

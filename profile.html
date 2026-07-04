@@ -204,6 +204,17 @@
       transform: translateY(-22px) scale(0.85);
       color: var(--color-accent);
     }
+
+    /* Mobile Responsive Fixes */
+    @media (hover: none) and (pointer: coarse) {
+      body { cursor: default !important; }
+      #custom-cursor-dot, #custom-cursor-ring { display: none !important; }
+      .paper-texture { display: none; }
+    }
+
+    @media screen and (max-width: 768px) {
+      input, select, textarea { font-size: 16px !important; }
+    }
   </style>
 
   <!-- Lucide Icons CDN -->
@@ -225,8 +236,8 @@
   <div id="custom-cursor-ring"></div>
 
   <!-- Ambient mesh blurs -->
-  <div class="fixed top-12 left-12 w-[35rem] h-[35rem] bg-sage-500/10 rounded-full filter blur-[120px] pointer-events-none z-0"></div>
-  <div class="fixed bottom-12 right-12 w-[30rem] h-[30rem] bg-terracotta-500/10 rounded-full filter blur-[120px] pointer-events-none z-0"></div>
+  <div class="fixed top-12 left-12 w-[15rem] h-[15rem] sm:w-[25rem] sm:h-[25rem] lg:w-[35rem] lg:h-[35rem] bg-sage-500/10 rounded-full filter blur-[60px] sm:blur-[80px] lg:blur-[120px] pointer-events-none z-0"></div>
+  <div class="fixed bottom-12 right-12 w-[15rem] h-[15rem] sm:w-[25rem] sm:h-[25rem] lg:w-[30rem] lg:h-[30rem] bg-terracotta-500/10 rounded-full filter blur-[60px] sm:blur-[80px] lg:blur-[120px] pointer-events-none z-0"></div>
 
   <!-- ==========================================
        GLOBAL NAV BAR & OVERLAY TOGGLES
@@ -350,7 +361,7 @@
         
         <!-- Left Side Info Column -->
         <div class="lg:col-span-5 space-y-6">
-          <div class="aspect-square w-full rounded-[2.5rem] overflow-hidden border-4 border-sand shadow-lg bg-cream">
+          <div class="aspect-square w-full max-w-[280px] mx-auto lg:max-w-none rounded-[2.5rem] overflow-hidden border-4 border-sand shadow-lg bg-cream">
             <img id="detail-image" src="" alt="Teacher portrait" class="w-full h-full object-cover">
           </div>
           <div class="p-6 bg-sand/40 border border-sage-300/60 rounded-[2rem] space-y-3 shadow-sm">
@@ -528,7 +539,7 @@
                 <label for="booking-student-name" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Full Name</label>
               </div>
 
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="relative">
                   <input type="email" id="booking-student-email" placeholder=" " class="floating-input w-full px-4 py-3 bg-cream border border-sage-200 rounded-xl text-sm focus:border-sage-500 focus:bg-white outline-none transition" required>
                   <label for="booking-student-email" class="absolute left-4 top-3 text-sm text-mutedgray pointer-events-none transition-transform duration-200 origin-left">Email Address</label>

@@ -3,6 +3,9 @@
  * Animations, Transitions, Theme Toggle, and Cursor FX
  */
 
+// Touch device detection
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 // Global Dark Mode state
 let isDarkMode = false;
 
@@ -10,7 +13,7 @@ let isDarkMode = false;
 // LENIS SMOOTH SCROLL INITIALIZATION
 // ------------------------------------------
 let lenis = null;
-if (typeof Lenis !== 'undefined') {
+if (!isTouchDevice && typeof Lenis !== 'undefined') {
   // Inject Lenis styling dynamically and promote animated elements to GPU layer for max FPS
   const style = document.createElement('style');
   style.id = 'lenis-styles';
@@ -209,6 +212,7 @@ function toggleTheme() {
 // CUSTOM LERP CURSOR
 // ------------------------------------------
 function initCustomCursor() {
+  if (isTouchDevice) return;
   const cursorDot = document.getElementById('custom-cursor-dot');
   const cursorRing = document.getElementById('custom-cursor-ring');
   if (!cursorDot || !cursorRing) return;
@@ -258,7 +262,7 @@ function attachCursorHoverListeners() {
 // MAGNETIC EFFECTS
 // ------------------------------------------
 function initMagneticEffects() {
-  if (typeof gsap === 'undefined') return;
+  if (isTouchDevice || typeof gsap === 'undefined') return;
 
   setupMagnet('contact-submit-wrap', 'contact-submit-btn', 80, 0.4);
   setupMagnet('theme-toggle-wrap', 'theme-toggle-btn', 70, 0.45);
@@ -676,7 +680,7 @@ function initScrollTriggers() {
 // HERO BACKGROUND TRANSITION (CROSS-FADE ON HOVER)
 // ------------------------------------------
 function initHeroHoverBg() {
-  if (typeof gsap === 'undefined') return;
+  if (isTouchDevice || typeof gsap === 'undefined') return;
 
   const ctaSixMonths = document.getElementById('cta-six-months');
   const bgHover = document.getElementById('hero-bg-hover');
@@ -725,7 +729,7 @@ function initHeroHoverBg() {
 // NAV BAR ROLLING TEXT EFFECT ON HOVER
 // ------------------------------------------
 function initNavRollingLinks() {
-  if (typeof gsap === 'undefined') return;
+  if (isTouchDevice || typeof gsap === 'undefined') return;
 
   // Inject styles dynamically
   const style = document.createElement('style');
