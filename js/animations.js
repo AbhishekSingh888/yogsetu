@@ -40,6 +40,17 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
     .organic-shadow-hover {
       will-change: transform;
     }
+    /* GPU promotion for fixed elements to lock smooth scrolling framerates */
+    .paper-texture {
+      will-change: transform !important;
+      transform: translate3d(0, 0, 0) !important;
+      backface-visibility: hidden;
+    }
+    .fixed.rounded-full[class*="bg-"] {
+      will-change: transform !important;
+      transform: translate3d(0, 0, 0) !important;
+      backface-visibility: hidden;
+    }
   `;
   document.head.appendChild(style);
 
