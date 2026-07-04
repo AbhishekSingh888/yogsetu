@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YogSetu // Verified Yoga Teacher Directory by YogKulam</title>
   
+  <!-- Preload LCP candidate hero background with high fetch priority -->
+  <link rel="preload" href="images/hero-bg01.jpg" as="image" fetchpriority="high">
+  
   <!-- SEO Metadata -->
   <meta name="description" content="Rigigorously verified, credentialed yoga teachers in India. Filtered by style, city, schedule, and budget. Direct connection without middlemen.">
   
@@ -207,7 +210,6 @@
 
     .split-child {
       display: inline-block;
-      will-change: transform;
     }
 
     /* Scroll-triggered text reveal */
@@ -219,7 +221,6 @@
 
     .reveal-child {
       display: block;
-      will-change: transform, opacity;
     }
 
     /* Infinite Marquee animations */

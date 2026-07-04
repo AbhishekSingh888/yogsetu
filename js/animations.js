@@ -4,7 +4,7 @@
  */
 
 // Touch device detection
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
 // Global Dark Mode state
 let isDarkMode = false;
@@ -13,7 +13,9 @@ let isDarkMode = false;
 // LENIS SMOOTH SCROLL INITIALIZATION
 // ------------------------------------------
 let lenis = null;
-if (!isTouchDevice && typeof Lenis !== 'undefined') {
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (!isTouchDevice && typeof Lenis !== 'undefined' && !prefersReducedMotion) {
   // Inject Lenis styling dynamically and promote animated elements to GPU layer for max FPS
   const style = document.createElement('style');
   style.id = 'lenis-styles';
@@ -34,10 +36,7 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
       pointer-events: none;
     }
     #custom-cursor-dot,
-    #custom-cursor-ring,
-    .draw-line-h,
-    .draw-line-v,
-    .organic-shadow-hover {
+    #custom-cursor-ring {
       will-change: transform;
     }
     /* GPU promotion for fixed elements to lock smooth scrolling framerates */
@@ -60,10 +59,11 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
   // Initialize Lenis with autoRaf: false to drive updates via GSAP ticker for frame synchronization
   lenis = new Lenis({
     autoRaf: false,
-    lerp: 0.08, // Tuned for beautiful, buttery inertia-based smooth scrolling
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential easing for buttery smooth momentum
     wheelMultiplier: 0.95, // Soft multiplier for mouse wheel steps
     touchMultiplier: 1.5,
-    syncTouch: true, // Syncs trackpads and mobile events smoothly
+    syncTouch: false, // Disables touch smoothing to maintain native zero-latency touch behavior on mobile/trackpads
     direction: 'vertical',
     gestureOrientation: 'vertical',
     smoothWheel: true,
@@ -89,13 +89,6 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
     gsap.ticker.lagSmoothing(0);
   }
 
-  // Refresh ScrollTrigger on resize to update trigger coordinates
-  window.addEventListener('resize', () => {
-    if (typeof ScrollTrigger !== 'undefined') {
-      ScrollTrigger.refresh();
-    }
-  });
-
   // Anchor links smooth scrolling interceptor
   document.addEventListener('click', (e) => {
     const anchor = e.target.closest('a[href^="#"]');
@@ -109,6 +102,18 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
       e.preventDefault();
       lenis.scrollTo(target);
     }
+  });
+}
+
+// Refresh ScrollTrigger on font load and full page load to ensure trigger coordinates are accurate
+if (typeof ScrollTrigger !== 'undefined') {
+  if (document.fonts) {
+    document.fonts.ready.then(() => {
+      ScrollTrigger.refresh();
+    });
+  }
+  window.addEventListener('load', () => {
+    ScrollTrigger.refresh();
   });
 }
 
@@ -251,14 +256,17 @@ function initCustomCursor() {
   window.addEventListener('mousemove', (e) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
-    gsap.set(cursorDot, { x: mouse.x, y: mouse.y });
   });
 
+  // Zero-overhead GPU-accelerated cursor tick
   gsap.ticker.add(() => {
     const dt = 1.0 - Math.pow(1.0 - 0.16, gsap.ticker.deltaRatio());
     ringPos.x += (mouse.x - ringPos.x) * dt;
     ringPos.y += (mouse.y - ringPos.y) * dt;
-    gsap.set(cursorRing, { x: ringPos.x, y: ringPos.y });
+    
+    // Direct translation bypasses GSAP inline style parsing for pure 120Hz/144Hz performance
+    cursorDot.style.transform = `translate3d(${mouse.x}px, ${mouse.y}px, 0) translate(-50%, -50%)`;
+    cursorRing.style.transform = `translate3d(${ringPos.x}px, ${ringPos.y}px, 0) translate(-50%, -50%)`;
   });
 
   document.addEventListener('mouseleave', () => {
@@ -295,21 +303,45 @@ function setupMagnet(wrapperId, buttonId, hoverRadius = 70, power = 0.4) {
   const btn = document.getElementById(buttonId);
   if (!wrap || !btn) return;
 
+  let rect = null;
+
+  // Initialize quickTo targets for x and y
+  const xTo = gsap.quickTo(btn, "x", { duration: 0.3, ease: "power2.out" });
+  const yTo = gsap.quickTo(btn, "y", { duration: 0.3, ease: "power2.out" });
+
+  // Cache client rectangle coordinates to avoid layout thrashing
+  function updateRect() {
+    rect = wrap.getBoundingClientRect();
+  }
+
+  wrap.addEventListener('mouseenter', () => {
+    updateRect();
+    gsap.set(btn, { willChange: "transform" });
+  });
+  window.addEventListener('resize', updateRect);
+
   wrap.addEventListener('mousemove', (e) => {
-    const rect = wrap.getBoundingClientRect();
+    if (!rect) updateRect();
     const relX = e.clientX - rect.left - rect.width / 2;
     const relY = e.clientY - rect.top - rect.height / 2;
     const distance = Math.sqrt(relX * relX + relY * relY);
 
     if (distance < hoverRadius) {
-      gsap.to(btn, { x: relX * power, y: relY * power, duration: 0.3, ease: "power2.out" });
+      xTo(relX * power);
+      yTo(relY * power);
     } else {
-      gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "power3.out" });
+      xTo(0);
+      yTo(0);
     }
   });
 
   wrap.addEventListener('mouseleave', () => {
-    gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "power3.out" });
+    xTo(0);
+    yTo(0);
+    // Clear will-change after a short delay so it doesn't linger permanently
+    setTimeout(() => {
+      gsap.set(btn, { clearProps: "willChange" });
+    }, 500);
   });
 }
 
@@ -481,10 +513,13 @@ function initSectionTextReveals() {
     const h2 = document.querySelector(headingSel);
     if (h2) {
       splitTextForReveal(h2);
-      gsap.fromTo(h2.querySelectorAll('.reveal-child'),
+      const targets = h2.querySelectorAll('.reveal-child');
+      gsap.fromTo(targets,
         { y: 50, autoAlpha: 0 },
         {
           y: 0, autoAlpha: 1, duration: 1, ease: 'power3.out', stagger: 0.12,
+          onStart: () => gsap.set(targets, { willChange: "transform,opacity" }),
+          onComplete: () => gsap.set(targets, { clearProps: "willChange" }),
           scrollTrigger: { trigger: triggerEl, start: 'top 80%', once: true }
         }
       );
@@ -493,28 +528,17 @@ function initSectionTextReveals() {
       const descEl = document.querySelector(descSel);
       if (descEl && !descEl.closest('.reveal-parent')) {
         splitTextForReveal(descEl);
-        gsap.fromTo(descEl.querySelectorAll('.reveal-child'),
+        const targets = descEl.querySelectorAll('.reveal-child');
+        gsap.fromTo(targets,
           { y: 40, autoAlpha: 0 },
           {
             y: 0, autoAlpha: 1, duration: 0.9, ease: 'power3.out', stagger: 0.1,
+            onStart: () => gsap.set(targets, { willChange: "transform,opacity" }),
+            onComplete: () => gsap.set(targets, { clearProps: "willChange" }),
             scrollTrigger: { trigger: triggerEl, start: 'top 80%', once: true, delay: 0.15 }
           }
         );
       }
-    }
-  }
-
-  // Reveal eyebrow labels
-  function revealLabel(sel) {
-    const el = document.querySelector(sel);
-    if (el) {
-      gsap.fromTo(el,
-        { autoAlpha: 0, y: 12 },
-        {
-          autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out',
-          scrollTrigger: { trigger: el.closest('section') || el, start: 'top 85%', once: true }
-        }
-      );
     }
   }
 
@@ -537,6 +561,8 @@ function initSectionTextReveals() {
           { autoAlpha: 0, y: 12 },
           {
             autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out',
+            onStart: () => gsap.set(label, { willChange: "transform,opacity" }),
+            onComplete: () => gsap.set(label, { clearProps: "willChange" }),
             scrollTrigger: { trigger: section, start: 'top 85%', once: true }
           }
         );
@@ -555,6 +581,8 @@ function initSectionTextReveals() {
     if (label) {
       gsap.fromTo(label, { autoAlpha: 0, y: 12 }, {
         autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out',
+        onStart: () => gsap.set(label, { willChange: "transform,opacity" }),
+        onComplete: () => gsap.set(label, { clearProps: "willChange" }),
         scrollTrigger: { trigger: testimonials, start: 'top 85%', once: true }
       });
     }
@@ -568,6 +596,8 @@ function initSectionTextReveals() {
     if (label) {
       gsap.fromTo(label, { autoAlpha: 0, y: 12 }, {
         autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out',
+        onStart: () => gsap.set(label, { willChange: "transform,opacity" }),
+        onComplete: () => gsap.set(label, { clearProps: "willChange" }),
         scrollTrigger: { trigger: philosophy, start: 'top 85%', once: true }
       });
     }
@@ -576,6 +606,8 @@ function initSectionTextReveals() {
     if (quoteCard) {
       gsap.fromTo(quoteCard, { autoAlpha: 0, y: 30, scale: 0.97 }, {
         autoAlpha: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out',
+        onStart: () => gsap.set(quoteCard, { willChange: "transform,opacity" }),
+        onComplete: () => gsap.set(quoteCard, { clearProps: "willChange" }),
         scrollTrigger: { trigger: quoteCard, start: 'top 85%', once: true }
       });
     }
@@ -587,8 +619,11 @@ function initSectionTextReveals() {
     const faqHeading = faq.querySelector('h2');
     if (faqHeading) {
       splitTextForReveal(faqHeading);
-      gsap.fromTo(faqHeading.querySelectorAll('.reveal-child'), { y: 50, autoAlpha: 0 }, {
+      const targets = faqHeading.querySelectorAll('.reveal-child');
+      gsap.fromTo(targets, { y: 50, autoAlpha: 0 }, {
         y: 0, autoAlpha: 1, duration: 1, ease: 'power3.out', stagger: 0.12,
+        onStart: () => gsap.set(targets, { willChange: "transform,opacity" }),
+        onComplete: () => gsap.set(targets, { clearProps: "willChange" }),
         scrollTrigger: { trigger: faq, start: 'top 80%', once: true }
       });
     }
@@ -596,18 +631,33 @@ function initSectionTextReveals() {
     if (label) {
       gsap.fromTo(label, { autoAlpha: 0, y: 12 }, {
         autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out',
+        onStart: () => gsap.set(label, { willChange: "transform,opacity" }),
+        onComplete: () => gsap.set(label, { clearProps: "willChange" }),
         scrollTrigger: { trigger: faq, start: 'top 85%', once: true }
       });
     }
   }
 
-  // --- Feature boxes & cards staggered reveal ---
-  document.querySelectorAll('#about-us .bg-cream.border, #final-cta .bg-cream.border').forEach((box, i) => {
-    gsap.fromTo(box, { autoAlpha: 0, y: 30, scale: 0.97 }, {
-      autoAlpha: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out',
-      scrollTrigger: { trigger: box, start: 'top 85%', once: true },
-      delay: i * 0.05
-    });
+  // --- Feature boxes & cards staggered reveal using ScrollTrigger.batch for performance ---
+  const cards = document.querySelectorAll('#about-us .bg-cream.border, #final-cta .bg-cream.border');
+  ScrollTrigger.batch(cards, {
+    start: 'top 85%',
+    once: true,
+    onEnter: (batch) => {
+      gsap.fromTo(batch, 
+        { autoAlpha: 0, y: 30, scale: 0.97 }, 
+        {
+          autoAlpha: 1, 
+          y: 0, 
+          scale: 1, 
+          duration: 0.8, 
+          ease: 'power3.out', 
+          stagger: 0.05,
+          onStart: () => gsap.set(batch, { willChange: "transform,opacity" }),
+          onComplete: () => gsap.set(batch, { clearProps: "willChange" })
+        }
+      );
+    }
   });
 }
 
@@ -821,31 +871,55 @@ function initScrollTriggers() {
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Dynamic Grid Lines drawing reveals on scroll
-  document.querySelectorAll('.draw-line-h').forEach(line => {
-    gsap.to(line, {
-      scaleX: 1,
-      duration: 1.2,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: line.parentElement,
-        start: "top 85%",
-        once: true
+  // Check for prefers-reduced-motion
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    // Instantly set all animated elements to their final states and return
+    gsap.set('.draw-line-h', { scaleX: 1 });
+    gsap.set('.draw-line-v', { scaleY: 1 });
+    gsap.set('.reveal-child', { y: 0, autoAlpha: 1 });
+    gsap.set('.split-child', { yPercent: 0, scaleY: 1 });
+    gsap.set('.hero-eyebrow, .hero-details, .absolute.bottom-8', { autoAlpha: 1, y: 0 });
+    gsap.set('#styles [class*="p-8"], #verification [class*="p-8"]', { opacity: 1, y: 0 });
+    gsap.set('#about-us .bg-cream.border, #final-cta .bg-cream.border', { autoAlpha: 1, y: 0, scale: 1 });
+    
+    // Set statistics to their targets directly
+    document.querySelectorAll('.stat-number').forEach(stat => {
+      const target = stat.getAttribute('data-target');
+      if (target) {
+        stat.textContent = parseInt(target).toLocaleString();
       }
     });
+    return;
+  }
+
+  // Dynamic Grid Lines drawing reveals on scroll using ScrollTrigger.batch for performance
+  ScrollTrigger.batch('.draw-line-h', {
+    start: "top 85%",
+    once: true,
+    onEnter: (batch) => {
+      gsap.to(batch, {
+        scaleX: 1,
+        duration: 1.2,
+        ease: "power2.out",
+        onStart: () => gsap.set(batch, { willChange: "transform" }),
+        onComplete: () => gsap.set(batch, { clearProps: "willChange" })
+      });
+    }
   });
 
-  document.querySelectorAll('.draw-line-v').forEach(line => {
-    gsap.to(line, {
-      scaleY: 1,
-      duration: 1.2,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: line.parentElement,
-        start: "top 85%",
-        once: true
-      }
-    });
+  ScrollTrigger.batch('.draw-line-v', {
+    start: "top 85%",
+    once: true,
+    onEnter: (batch) => {
+      gsap.to(batch, {
+        scaleY: 1,
+        duration: 1.2,
+        ease: "power2.out",
+        onStart: () => gsap.set(batch, { willChange: "transform" }),
+        onComplete: () => gsap.set(batch, { clearProps: "willChange" })
+      });
+    }
   });
 
   // Stats number increment trigger
@@ -870,15 +944,23 @@ function initScrollTriggers() {
     });
   });
 
-
-  // Staggered reveals for other content grids
+  // Staggered reveals for other content grids with dynamic will-change
   ScrollTrigger.create({
     trigger: '#styles',
     start: 'top 75%',
     onEnter: () => {
-      gsap.fromTo('#styles [class*="p-8"]',
+      const targets = document.querySelectorAll('#styles [class*="p-8"]');
+      gsap.fromTo(targets,
         { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.08 }
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.8, 
+          ease: 'power3.out', 
+          stagger: 0.08,
+          onStart: () => gsap.set(targets, { willChange: "transform,opacity" }),
+          onComplete: () => gsap.set(targets, { clearProps: "willChange" })
+        }
       );
     },
     once: true
@@ -888,9 +970,18 @@ function initScrollTriggers() {
     trigger: '#verification',
     start: 'top 75%',
     onEnter: () => {
-      gsap.fromTo('#verification [class*="p-8"]',
+      const targets = document.querySelectorAll('#verification [class*="p-8"]');
+      gsap.fromTo(targets,
         { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1 }
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.8, 
+          ease: 'power3.out', 
+          stagger: 0.1,
+          onStart: () => gsap.set(targets, { willChange: "transform,opacity" }),
+          onComplete: () => gsap.set(targets, { clearProps: "willChange" })
+        }
       );
     },
     once: true
