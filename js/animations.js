@@ -46,13 +46,13 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
   // Initialize Lenis with disabled internal RAF (autoRaf: false) to prevent frame double-handling
   lenis = new Lenis({
     autoRaf: false,
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential easing for ultra-smoothness
+    lerp: 0.065, // Lower means slower, butter-smooth deceleration (glide)
+    wheelMultiplier: 0.95, // Soft multiplier for mouse wheel steps
+    touchMultiplier: 1.5,
+    syncTouch: true, // Syncs trackpads and mobile events smoothly
     direction: 'vertical',
     gestureOrientation: 'vertical',
     smoothWheel: true,
-    wheelMultiplier: 1.0,
-    touchMultiplier: 1.2,
     infinite: false,
   });
 
