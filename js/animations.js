@@ -54,6 +54,9 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
   `;
   document.head.appendChild(style);
 
+  // Remove native scroll-smooth class from document element to prevent conflict with Lenis
+  document.documentElement.classList.remove('scroll-smooth');
+
   // Initialize Lenis with native RAF (autoRaf: true) for optimal, hardware-synced updates
   lenis = new Lenis({
     autoRaf: true,
