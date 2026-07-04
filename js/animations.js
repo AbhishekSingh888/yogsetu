@@ -57,10 +57,10 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
   // Remove native scroll-smooth class from document element to prevent conflict with Lenis
   document.documentElement.classList.remove('scroll-smooth');
 
-  // Initialize Lenis with native RAF (autoRaf: true) for optimal, hardware-synced updates
+  // Initialize Lenis with autoRaf: false to drive updates via GSAP ticker for frame synchronization
   lenis = new Lenis({
-    autoRaf: true,
-    lerp: 0.065, // Slower, butter-smooth deceleration (glide)
+    autoRaf: false,
+    lerp: 0.08, // Tuned for beautiful, buttery inertia-based smooth scrolling
     wheelMultiplier: 0.95, // Soft multiplier for mouse wheel steps
     touchMultiplier: 1.5,
     syncTouch: true, // Syncs trackpads and mobile events smoothly
@@ -72,6 +72,29 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
 
   // Share lenis globally
   window.lenis = lenis;
+
+  // Sync ScrollTrigger position with Lenis scroll updates in the same frame
+  lenis.on('scroll', () => {
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.update();
+    }
+  });
+
+  // Drive Lenis tick inside GSAP ticker loop for unified RAF updates
+  if (typeof gsap !== 'undefined') {
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    // Disable lag smoothing to prevent animation stuttering/jumping
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  // Refresh ScrollTrigger on resize to update trigger coordinates
+  window.addEventListener('resize', () => {
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.refresh();
+    }
+  });
 
   // Anchor links smooth scrolling interceptor
   document.addEventListener('click', (e) => {
