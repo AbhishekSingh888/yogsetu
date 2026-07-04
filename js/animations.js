@@ -54,10 +54,10 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
   `;
   document.head.appendChild(style);
 
-  // Initialize Lenis with disabled internal RAF (autoRaf: false) to prevent frame double-handling
+  // Initialize Lenis with native RAF (autoRaf: true) for optimal, hardware-synced updates
   lenis = new Lenis({
-    autoRaf: false,
-    lerp: 0.065, // Lower means slower, butter-smooth deceleration (glide)
+    autoRaf: true,
+    lerp: 0.065, // Slower, butter-smooth deceleration (glide)
     wheelMultiplier: 0.95, // Soft multiplier for mouse wheel steps
     touchMultiplier: 1.5,
     syncTouch: true, // Syncs trackpads and mobile events smoothly
@@ -69,22 +69,6 @@ if (!isTouchDevice && typeof Lenis !== 'undefined') {
 
   // Share lenis globally
   window.lenis = lenis;
-
-  // Connect to GSAP ScrollTrigger
-  lenis.on('scroll', () => {
-    if (typeof ScrollTrigger !== 'undefined') {
-      ScrollTrigger.update();
-    }
-  });
-
-  // Integrate Lenis frame ticks with GSAP ticker loop (primary driver)
-  if (typeof gsap !== 'undefined') {
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-    // Disable lag smoothing to prevent jumping / drops
-    gsap.ticker.lagSmoothing(0);
-  }
 
   // Anchor links smooth scrolling interceptor
   document.addEventListener('click', (e) => {
