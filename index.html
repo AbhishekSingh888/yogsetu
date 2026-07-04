@@ -210,6 +210,18 @@
       will-change: transform;
     }
 
+    /* Scroll-triggered text reveal */
+    .reveal-parent {
+      overflow: hidden;
+      display: block;
+      vertical-align: bottom;
+    }
+
+    .reveal-child {
+      display: block;
+      will-change: transform, opacity;
+    }
+
     /* Infinite Marquee animations */
     @keyframes marqueeLeft {
       0% { transform: translateX(0); }
