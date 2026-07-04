@@ -838,6 +838,113 @@ function initNavRollingLinks() {
 }
 
 // ------------------------------------------
+// LINK HOVER PREVIEW ANIMATION (GSAP)
+// ------------------------------------------
+function initLinkPreviews() {
+  if (isTouchDevice || typeof gsap === 'undefined') return;
+
+  // Create preview container
+  const preview = document.createElement('div');
+  preview.id = 'link-preview-container';
+  preview.style.position = 'fixed';
+  preview.style.width = '190px';
+  preview.style.height = '120px';
+  preview.style.borderRadius = '16px';
+  preview.style.overflow = 'hidden';
+  preview.style.boxShadow = '0 20px 45px rgba(0,0,0,0.22)';
+  preview.style.border = '2.5px solid var(--color-canvas)';
+  preview.style.pointerEvents = 'none';
+  preview.style.zIndex = '9998';
+  preview.style.opacity = '0';
+  preview.style.visibility = 'hidden';
+  preview.style.transform = 'translate(-50%, -50%) scale(0.85)';
+  preview.style.willChange = 'transform, opacity';
+  
+  const img = document.createElement('img');
+  img.style.width = '100%';
+  img.style.height = '100%';
+  img.style.objectFit = 'cover';
+  preview.appendChild(img);
+  document.body.appendChild(preview);
+
+  let activeLink = null;
+  const quickX = gsap.quickTo(preview, "x", { duration: 0.45, ease: "power3.out" });
+  const quickY = gsap.quickTo(preview, "y", { duration: 0.45, ease: "power3.out" });
+  const quickRotate = gsap.quickTo(preview, "rotate", { duration: 0.6, ease: "power2.out" });
+
+  // Map URLs to preview images
+  const urlMap = {
+    'index.html': 'images/hero_background.jpg',
+    'teachers.html': 'images/yoga_1.png',
+    'jobs.html': 'images/yoga_4.png',
+    'contact.html': 'images/yoga_3.png'
+  };
+
+  // Find all nav links
+  const links = document.querySelectorAll('.roll-link, .menu-link, nav a, #menu-overlay a');
+  
+  links.forEach(link => {
+    const href = link.getAttribute('href') || '';
+    let previewImg = '';
+    
+    // Find matching preview
+    for (const key in urlMap) {
+      if (href.includes(key)) {
+        previewImg = urlMap[key];
+        break;
+      }
+    }
+    
+    if (!previewImg) return;
+
+    link.addEventListener('mouseenter', (e) => {
+      activeLink = link;
+      img.src = previewImg;
+      
+      // Position instantly on first enter
+      gsap.set(preview, { 
+        x: e.clientX, 
+        y: e.clientY,
+        visibility: 'visible'
+      });
+      
+      gsap.to(preview, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: "power2.out"
+      });
+    });
+
+    link.addEventListener('mousemove', (e) => {
+      if (activeLink !== link) return;
+      quickX(e.clientX + 15);
+      quickY(e.clientY - 60);
+      
+      const angle = (e.clientX / window.innerWidth - 0.5) * 15;
+      quickRotate(angle);
+    });
+
+    link.addEventListener('mouseleave', () => {
+      activeLink = null;
+      gsap.to(preview, {
+        opacity: 0,
+        scale: 0.85,
+        rotate: 0,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+          if (!activeLink) {
+            preview.style.visibility = 'hidden';
+            img.src = '';
+          }
+        }
+      });
+    });
+  });
+}
+
+// ------------------------------------------
 // DOM INITIALIZATION
 // ------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
@@ -848,6 +955,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initStepsDeck();
   initHeroHoverBg();
   initNavRollingLinks();
+  initLinkPreviews();
 
   // Inject mobile-responsive CSS overrides for touch devices
   if (isTouchDevice) {

@@ -219,6 +219,7 @@
       display: inline-flex;
       white-space: nowrap;
       animation: marqueeLeft 42s linear infinite;
+      will-change: transform;
     }
 
     @keyframes rotateLotus {
@@ -319,7 +320,7 @@
   </style>
 
   <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.468.0"></script>
   
   <!-- GSAP & ScrollTrigger CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -337,8 +338,8 @@
   <div id="custom-cursor-ring"></div>
 
   <!-- Ambient mesh blurs -->
-  <div class="fixed top-12 left-12 w-[15rem] h-[15rem] sm:w-[25rem] sm:h-[25rem] lg:w-[35rem] lg:h-[35rem] bg-sage-500/10 rounded-full filter blur-[60px] sm:blur-[80px] lg:blur-[120px] pointer-events-none z-0"></div>
-  <div class="fixed bottom-12 right-12 w-[15rem] h-[15rem] sm:w-[25rem] sm:h-[25rem] lg:w-[30rem] lg:h-[30rem] bg-terracotta-500/10 rounded-full filter blur-[60px] sm:blur-[80px] lg:blur-[120px] pointer-events-none z-0"></div>
+  <div class="fixed top-12 left-12 w-[15rem] h-[15rem] sm:w-[25rem] sm:h-[25rem] lg:w-[35rem] lg:h-[35rem] bg-sage-500/10 rounded-full filter blur-[40px] sm:blur-[60px] lg:blur-[80px] pointer-events-none z-0"></div>
+  <div class="fixed bottom-12 right-12 w-[15rem] h-[15rem] sm:w-[25rem] sm:h-[25rem] lg:w-[30rem] lg:h-[30rem] bg-terracotta-500/10 rounded-full filter blur-[40px] sm:blur-[60px] lg:blur-[80px] pointer-events-none z-0"></div>
 
   <!-- ==========================================
        1. DEEP BREATHING PRELOADER SCREEN
@@ -650,7 +651,7 @@
               <!-- Panel 1 -->
               <div data-panel="1" class="step-content-panel space-y-6">
                 <div class="max-w-sm mx-auto w-full rounded-[1.5rem] overflow-hidden bg-sand/30">
-                  <img src="images/audit.png" alt="YogSetu Search Filters Showcase" class="w-full h-auto object-cover block">
+                  <img src="images/audit.png" alt="YogSetu Search Filters Showcase" loading="lazy" class="w-full h-auto object-cover block">
                 </div>
                 <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
                   Filter by yoga style (Hatha, Ashtanga, Prenatal, Therapeutic), location or online, timing, language preference — and more options specific to teaching approach.
@@ -661,7 +662,7 @@
               <div data-panel="2" class="step-content-panel space-y-6 hidden">
                 
                 <div class="max-w-sm mx-auto w-full rounded-[1.5rem] overflow-hidden  bg-sand/30 ">
-                  <img src="images/audit.png" alt="YogSetu Profile Audit Verification Showcase" class="w-full h-auto object-cover block">
+                  <img src="images/audit.png" alt="YogSetu Profile Audit Verification Showcase" loading="lazy" class="w-full h-auto object-cover block">
                 </div>
                 <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
                   See detailed certification data, accreditation by top bodies like Yoga Alliance or AYUSH/CCRYN, teaching experience, session format, and individual teacher video — before anyone answers the phone.
@@ -672,7 +673,7 @@
               <div data-panel="3" class="step-content-panel space-y-6 hidden">
                 
                 <div class="max-w-sm mx-auto w-full rounded-[1.5rem] overflow-hidden  bg-sand/30 ">
-                  <img src="images/booking.png" alt="YogSetu Direct Booking Showcase" class="w-full h-auto object-cover block">
+                  <img src="images/booking.png" alt="YogSetu Direct Booking Showcase" loading="lazy" class="w-full h-auto object-cover block">
                 </div>
                 <p class="text-sm sm:text-base text-mutedgray leading-relaxed font-sans">
                   Contact teachers through their verified profiles and attend their first session. No middlemen. No hidden platform take. Straight to your teacher within 24 minutes of first visiting YogSetu.
