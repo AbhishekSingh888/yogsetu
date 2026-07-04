@@ -477,6 +477,9 @@ function reveal() {
   const dx = (navRect.left + navRect.width / 2) - (loaderRect.left + loaderRect.width / 2);
   const dy = (navRect.top + navRect.height / 2) - (loaderRect.top + loaderRect.height / 2);
 
+  // Fade preloader inner content so only the lotus icon & sliding background remain visible
+  const innerContent = loaderEl.querySelectorAll('div > span, div > p, #preloader-circle');
+
   const tl = gsap.timeline({
     onComplete: () => {
       loaderEl.style.display = 'none';
@@ -488,12 +491,13 @@ function reveal() {
     }
   });
 
-  tl.to(loaderLotus, { x: dx, y: dy, scale: scale, duration: 1.1, ease: 'power3.inOut' }, 0)
-    .to(hero, { clipPath: 'circle(150% at 50% 50%)', duration: 1.25, ease: 'power3.inOut' }, 0.1)
-    .to(loaderLotus, { opacity: 0, duration: 0.25 }, 0.9)
-    .to(navMark, { opacity: 1, duration: 0.35 }, 1.0)
-    .to(loaderEl, { opacity: 0, duration: 0.45 }, 1.05)
-    .add(heroEntrance(), 1.15);
+  tl.to(innerContent, { opacity: 0, scale: 0.95, duration: 0.35, ease: 'power2.in' }, 0)
+    .to(loaderLotus, { x: dx, y: dy, scale: scale, duration: 1.1, ease: 'power3.inOut' }, 0.1)
+    .to(loaderEl, { yPercent: -100, duration: 1.1, ease: 'power3.inOut' }, 0.1)
+    .to(hero, { clipPath: 'circle(150% at 50% 50%)', duration: 1.25, ease: 'power3.inOut' }, 0.15)
+    .to(loaderLotus, { opacity: 0, duration: 0.2 }, 0.95)
+    .to(navMark, { opacity: 1, duration: 0.25 }, 1.0)
+    .add(heroEntrance(), 1.1);
 }
 
 if (typeof gsap !== 'undefined') {
@@ -731,23 +735,36 @@ function initHeroHoverBg() {
 function initNavRollingLinks() {
   if (isTouchDevice || typeof gsap === 'undefined') return;
 
-  // Inject styles dynamically
-  const style = document.createElement('style');
-  style.textContent = `
-    .roll-link {
-      position: relative;
-      display: inline-block;
-      overflow: hidden;
-      vertical-align: top;
-      height: 1.25em;
-      line-height: 1.25em;
-    }
-    .roll-text {
-      display: block;
-      white-space: nowrap;
-    }
-  `;
-  document.head.appendChild(style);
+  // Inject styles dynamically if not already present
+  if (!document.getElementById('roll-link-styles')) {
+    const style = document.createElement('style');
+    style.id = 'roll-link-styles';
+    style.textContent = `
+      .roll-link {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: top;
+        height: 1.25em;
+        line-height: 1.25em;
+      }
+      .roll-text {
+        display: block;
+        white-space: nowrap;
+      }
+      .roll-text span {
+        font-style: normal !important;
+      }
+      .menu-link.roll-link {
+        height: 1.2em;
+        line-height: 1.2em;
+        overflow: hidden;
+        position: relative;
+        display: inline-block;
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   // Helper to split text element content into character spans
   function splitTextIntoChars(element) {
@@ -769,8 +786,23 @@ function initNavRollingLinks() {
     return chars;
   }
 
+  // Auto-enhance any .menu-link in sidenav/overlay that doesn't have .roll-text children yet
+  document.querySelectorAll('.menu-link').forEach(link => {
+    if (!link.classList.contains('roll-link') && link.querySelectorAll('.roll-text').length === 0) {
+      const rawText = link.textContent.trim();
+      link.classList.add('roll-link');
+      link.innerHTML = `
+        <span class="roll-text block">${rawText}</span>
+        <span class="roll-text block absolute top-0 left-0 right-0 pointer-events-none text-sage-600 italic">${rawText}</span>
+      `;
+    }
+  });
+
   // Bind stagger hover timeline for each link
   document.querySelectorAll('.roll-link').forEach(link => {
+    if (link.dataset.rollBound === 'true') return;
+    link.dataset.rollBound = 'true';
+
     const texts = link.querySelectorAll('.roll-text');
     if (texts.length >= 2) {
       const chars1 = splitTextIntoChars(texts[0]);
@@ -779,19 +811,20 @@ function initNavRollingLinks() {
       const tlHover = gsap.timeline({ paused: true })
         .to(chars1, {
           yPercent: -100,
-          duration: 0.8,
+          duration: 0.6,
           ease: "power3.inOut",
-          stagger: 0.03
+          stagger: 0.025
         }, 0)
         .fromTo(chars2, 
-          { yPercent: 100 },
+          { yPercent: 100, skewX: 0 },
           {
             yPercent: 0,
-            duration: 0.8,
+            skewX: -12,
+            duration: 0.6,
             ease: "power3.inOut",
-            stagger: 0.03
+            stagger: 0.025
           },
-          0.1
+          0.04
         );
 
       link.addEventListener('mouseenter', () => {
@@ -815,6 +848,21 @@ document.addEventListener('DOMContentLoaded', () => {
   initStepsDeck();
   initHeroHoverBg();
   initNavRollingLinks();
+
+  // Inject mobile-responsive CSS overrides for touch devices
+  if (isTouchDevice) {
+    const mobileStyle = document.createElement('style');
+    mobileStyle.id = 'mobile-responsive-overrides';
+    mobileStyle.textContent = `
+      @media (hover: none) and (pointer: coarse) {
+        body { cursor: default !important; }
+        #custom-cursor-dot, #custom-cursor-ring { display: none !important; }
+        .paper-texture { display: none !important; }
+        .organic-shadow-hover:hover { transform: none; }
+      }
+    `;
+    document.head.appendChild(mobileStyle);
+  }
 
   // Bind theme toggle click
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
